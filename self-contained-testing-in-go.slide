@@ -1,0 +1,205 @@
+Self-contained testing in Go
+28 Sep 2016
+
+Matt Layher
+Software Engineer, DigitalOcean
+mdlayher@do.co
+@mdlayher
+
+* Introduction
+
+- Software Engineer on the Cloud Engineering: Network team (#swe-net)
+- Lover of all types of craft beer (#beer)
+- Opinionated Gopher (#golang!)
+
+* Testing in Go
+
+There are many different ways to test your Go programs.
+
+There are many competing methods, testing frameworks, etc.
+
+Today, I will detail some of the approaches that have worked best for me.
+
+Use my experience for reference, but not as a rigid set of rules.
+
+* What is a "self-contained" test?
+
+My definition of a _self-contained_ test is one which does not require any
+external communication.  This could mean:
+
+- a network service
+- another binary
+- files in the filesystem
+
+Most tests should be able to run by simply using `go test ./...`, without
+build tags or configuration.
+
+Integration tests with MySQL, redis, etc. are out of scope for this talk.
+
+* Basic testing
+
+Let's start with a simple example!
+
+.play self-contained-testing-in-go/1/divide.go
+
+* Basic testing (cont.)
+
+A first pass at a test for function `Divide()`.  Tests using a single pair of
+inputs to produce an expected output.
+
+.code self-contained-testing-in-go/1/divide_test.go
+
+	$ go test -v .
+	=== RUN   TestDivide
+	--- PASS: TestDivide (0.00s)
+	PASS
+	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/1  0.001s
+
+* Basic testing (cont.)
+
+But what happens when we try to divide by zero?
+
+.play self-contained-testing-in-go/2/divide.go
+
+* Improving Divide
+
+We can protect against division by zero by checking if `b == 0` before
+performing the division operation.
+
+.play self-contained-testing-in-go/3/divide.go /START OMIT/,/END OMIT/
+
+Now that `Divide()` can return either a valid result or an error, we should write
+tests which check for both results.
+
+* Table-driven tests
+
+When testing more than one case for a simple function, use table-driven tests!
+
+Make a table of tests with various inputs, outputs, and expected errors.  Giving
+each test a name helps with "sub-tests", as we'll see shortly.
+
+.code self-contained-testing-in-go/3/divide_test.go /START TABLE OMIT/,/END TABLE OMIT/
+
+* Table-driven tests (cont.)
+
+For each test table case, create a sub-test with the given name, and then
+check the results of `Divide()` against the results from the test table.
+
+.code self-contained-testing-in-go/3/divide_test.go /START LOOP OMIT/,/END LOOP OMIT/
+
+* Table-driven tests (cont.)
+
+The `want, got` pattern is helpful for copying and pasting checks, and easily
+modifying them in the future.
+
+Need only change what is assigned to `want` and `got`.
+
+.code self-contained-testing-in-go/3/divide_test.go /START CHECK OMIT/,/END CHECK OMIT/
+
+Nice output format for when your tests aren't passing.
+
+	--- FAIL: TestDivide/OK (0.00s)
+		divide_test.go:42: unexpected result:
+			- want: 1
+			-  got: 2
+
+* Table-driven tests (cont.)
+
+When combined with sub-tests, table-driven tests produce nicely-formatted output
+that indicates exactly which test cases are passing or failing.
+
+	$ go test -v .
+	=== RUN   TestDivide
+	=== RUN   TestDivide/divide_by_zero
+	=== RUN   TestDivide/OK
+	--- PASS: TestDivide (0.00s)
+		--- PASS: TestDivide/divide_by_zero (0.00s)
+		--- PASS: TestDivide/OK (0.00s)
+	PASS
+	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/3        0.001s
+
+Sub-tests are new in Go 1.7.  Use them to run single test cases.
+
+	$ go test -v -run=TestDivide/divide_by_zero .
+	=== RUN   TestDivide
+	=== RUN   TestDivide/divide_by_zero
+	--- PASS: TestDivide (0.00s)
+	--- PASS: TestDivide/divide_by_zero (0.00s)
+	PASS
+	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/3        0.001s
+
+* Testing network services
+
+Suppose we have a Client type that we want to test with mock data.
+
+We want to verify that our Client accepts correct data from a server, and
+that it rejects incorrect data.
+
+Repeatedly performing test setup and teardown code is a hassle.  Relying on
+external services makes tests difficult to run.
+
+Closures are the perfect solution to our problem.
+
+* Testing network services (cont.)
+
+A simple HTTP client which checks for an output string from a `/status` endpoint.
+
+.code self-contained-testing-in-go/4/client.go /START CLIENT OMIT/,/END CLIENT OMIT/
+
+Error handling omitted for brevity.  Please check all errors in production code.
+
+* Testing network services (cont.)
+
+We create a test helper, `testClient()`, which makes use of `net/http/httptest`
+to set up a self-contained HTTP server.
+
+.code self-contained-testing-in-go/4/client_test.go /START TESTCLIENT OMIT/,/END TESTCLIENT OMIT/
+
+A Client is created and pointed to the test server, and a "done" closure is
+returned to clean up resources.
+
+* Testing network services (cont.)
+
+Using `testClient()` is simple!  It enables testing that the Client's HTTP request sends
+correct data.  It also enables mocking the HTTP response.
+
+.code self-contained-testing-in-go/4/client_test.go /START TEST OMIT/,/END TEST OMIT/
+
+* Testing network services (cont.)
+
+This pattern works great with all kinds of network services.
+
+Example: calling `net.Listen("tcp", ":0")` will create a TCP listener on a random port.
+
+You can create a `net/http/httptest`-like API for all kinds of network services.
+
+* Testing with a database
+
+This pattern can also be applied to database connections.
+
+If we wanted to set up and tear down a database during a test:
+
+	func TestDB(t *testing.T) {
+		err := withDB(t, func(db *sql.DB) error {
+			return testDBReadWrite(t, db)
+		})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	}
+
+	func withDB(t *testing.T, fn func(db *sql.DB) error) error {
+		db := setupDB()
+		defer teardownDB(db)
+
+		return fn(db)
+	})
+
+Can be useful to use SQLite or similar during tests!
+
+* Takeaways
+
+- Keep tests as self-contained as possible
+- Make use of table-driven tests with subtests
+- Mock client/server interactions using no external services
+- Tidy up tedious setup and teardown code using closures
