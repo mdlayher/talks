@@ -36,11 +36,27 @@ build tags or configuration.
 
 Integration tests with MySQL, redis, etc. are out of scope for this talk.
 
+: Enabling your tests to run without external dependencies is important!
+#
+: Writing code that only works on Linux isn't friendly to those on OSX,
+: and vice-versa
+#
+: In the same vein, requiring MySQL, redis, or any other service is unfriendly
+: as well.
+#
+: It's almost always possible to write nice, clean, self-contained tests.
+#
+: Save the database and filesystem interactions for integration tests.
+
 * Basic testing
 
 Let's start with a simple example!
 
 .play self-contained-testing-in-go/1/divide.go
+
+: This code works as-is, and if we hit Run, it produces an output we expect.
+#
+: Nothing too fancy going on here.  No error handling at all.
 
 * Basic testing (cont.)
 
@@ -55,11 +71,29 @@ inputs to produce an expected output.
 	PASS
 	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/1  0.001s
 
+: We can write a test for this code rather easily.  This test is acceptable,
+: but it only covers a single case.
+#
+: Good tests should check for a variety of inputs and outputs.
+
 * Basic testing (cont.)
 
 But what happens when we try to divide by zero?
 
 .play self-contained-testing-in-go/2/divide.go
+
+: In elementary school, I learned that dividing any number by zero produces the
+: result 0.
+#
+: Turns out, this isn't quite correct.
+#
+: What happens when we run this code with variable b set to 0?
+#
+: We get a panic and a stacktrace.  Not a very friendly user experience.
+#
+: In addition, our previous test didn't bother to check for this case.
+#
+: Can we do better?
 
 * Improving Divide
 
@@ -71,6 +105,16 @@ performing the division operation.
 Now that `Divide()` can return either a valid result or an error, we should write
 tests which check for both results.
 
+: Functions with multiple return values are rather common in Go.
+#
+: Here, we can add a check for b == 0 and return an error if bad input is
+: provided by a user.
+#
+: This is more friendly, and won't cause your program to immediately crash with
+: a panic.
+#
+: We should add a test case for b == 0!
+
 * Table-driven tests
 
 When testing more than one case for a simple function, use table-driven tests!
@@ -80,12 +124,32 @@ each test a name helps with "sub-tests", as we'll see shortly.
 
 .code self-contained-testing-in-go/3/divide_test.go /START TABLE OMIT/,/END TABLE OMIT/
 
+: Table-driven tests are one of my favorite constructs in Go.
+#
+: They enable you to create a table of tests which can provide a variety of
+: inputs and expected outputs for simple functions.
+#
+: Table-driven tests are great for checking the output of math functions,
+: string parsing functions, etc.
+#
+: However, they are not always so great for network services.  We'll get to that
+: a little later on.
+
 * Table-driven tests (cont.)
 
 For each test table case, create a sub-test with the given name, and then
 check the results of `Divide()` against the results from the test table.
 
 .code self-contained-testing-in-go/3/divide_test.go /START LOOP OMIT/,/END LOOP OMIT/
+
+: The actual testing happens within the loop of a table-driven test.
+#
+: In this case, we're taking advantage of Go 1.7's subtests to isolate
+: each test case and provide cleaner output.
+#
+: Essentially, we perform the function we are testing with fixed inputs,
+: and then verify that it produces the error we expect (which may be none),
+: and the correct result for a Divide operation.
 
 * Table-driven tests (cont.)
 
@@ -102,6 +166,17 @@ Nice output format for when your tests aren't passing.
 		divide_test.go:42: unexpected result:
 			- want: 1
 			-  got: 2
+
+: The want, got pattern seems a little strange, but it's a pattern I've found to
+: be immensely useful.
+#
+: It enables you to easily check for various conditions simply by changing the
+: variables assigned to want and got.  It's friendlier than copying and pasting
+: some long structure field name, or slice index.
+#
+: In addition, by lining up the output using newlines and spaces, we are able to
+: easily compare the expected result against the result that was output by our
+: function.
 
 * Table-driven tests (cont.)
 
@@ -128,6 +203,15 @@ Sub-tests are new in Go 1.7.  Use them to run single test cases.
 	PASS
 	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/3        0.001s
 
+: I cannot recommend sub-tests enough.  They allow you to break your monolithic
+: tests into smaller chunks that can be run individually.
+#
+: Sub-tests allow you to debug code with much less noise, since you can run a
+: failing test case in isolation until it passes.
+#
+: If your table-driven tests aren't using sub-tests yet, I highly recommend
+: modifying them to do so.  It'll make your life a lot easier in the long run.
+
 * Testing using the filesystem
 
 On Linux, `/proc` contains a lot of useful info.
@@ -135,6 +219,16 @@ On Linux, `/proc` contains a lot of useful info.
 We want to parse `/proc/cmdline` to retrieve boot parameters.
 
 How can we test this on non-Linux machines?
+
+: While it may be useful to try and grab the output from the filesystem for
+: integration tests, it prevents coworkers running OSX, Windows, etc. from
+: verifying that your test is correct.
+#
+: Whenever possible, make sure that you are able to appropriately mock
+: interactions with a filesystem.
+#
+: This can be done with interfaces or clever use of closures, but today,
+: we'll talk about a very simple solution.
 
 * Testing using the filesystem (cont.)
 
@@ -146,6 +240,15 @@ How can we test this function without depending on the filesystem?
 
 Error handling omitted for brevity.  Please check all errors in production code.
 
+: As you can see, this function relies on opening a specific file in the
+: filesystem.  This won't run on OSX or Windows, at all.
+#
+: If you're familiar with Go, you'll know that an os.File implements the
+: interface, io.Reader.
+#
+: We can use this to our advantage to write cross-platform friendly tests
+: and verify a wide variety of scenarios.
+
 * Testing using the filesystem (cont.)
 
 The `io.Reader` interface is the answer!
@@ -155,12 +258,39 @@ of types as input for our tests.
 
 .code self-contained-testing-in-go/5/cmdline.go /START IOREADER OMIT/,/END IOREADER OMIT/
 
+: By separating the concern of opening the file and parsing its output,
+: we are able to easily create a much more testable function.
+#
+: 100% code coverage often isn't necessary to produce quality tests.  In
+: this case, we trust that os.Open does what we would expect, and only
+: worry about parsing the output of the file.
+#
+: It isn't recommended to use ioutil.ReadAll for large files, but since this
+: particular file is rather small, it's acceptable to use here.
+#
+: By assigning the "no boot image" error to a variable, we are able to use
+: that variable in tests to check that malformed output is appropriately
+: rejected.
+#
+: Again, this is just one solution to the problem.  A more intricate solution
+: could stub filesystem interactions using an interface.  For our purposes,
+: with a single file, this is arguably the easiest approach.
+
 * Testing using the filesystem (cont.)
 
 Using table-driven tests, we can pass any `io.Reader` to our function for
 testing.  `strings.NewReader()` wraps a string as an `io.Reader`.
 
 .code self-contained-testing-in-go/5/cmdline_test.go /START TESTTABLE OMIT/,/END TESTTABLE OMIT/
+
+: Test tables are a great solution for testing the new ParseCommandLine
+: function.
+#
+: Using this approach, we can specify any io.Reader.  In this case, it's
+: easy to use strings.NewReader to wrap a string in an io.Reader.
+#
+: This way, we can test against a variety of malformed file output
+: and ensure that our code handles all errors gracefully.
 
 * Testing using the filesystem (cont.)
 
@@ -170,6 +300,12 @@ No need to rely on the filesystem for tests if we can mock the data
 using interfaces.
 
 .code self-contained-testing-in-go/5/cmdline_test.go /START TESTLOOP OMIT/,/END TESTLOOP OMIT/
+
+: The test loop looks very similar to our previous test loop.
+#
+: By using sub-tests for each test case, we are able to effectively isolate
+: single tests from the test table.  Great for tracking down a nasty
+: corner case.
 
 * Testing network services
 
@@ -183,6 +319,12 @@ external services makes tests difficult to run.
 
 Closures are the perfect solution to our problem.
 
+: Ideally, a test should not depend on any external service or state to
+: work properly.
+#
+: Go provides a rather elegant solution to the problem of testing HTTP-based
+: services.
+
 * Testing network services (cont.)
 
 A simple HTTP client which checks for an output string from a `/status` endpoint.
@@ -190,6 +332,9 @@ A simple HTTP client which checks for an output string from a `/status` endpoint
 .code self-contained-testing-in-go/4/client.go /START CLIENT OMIT/,/END CLIENT OMIT/
 
 Error handling omitted for brevity.  Please check all errors in production code.
+
+: This is a very bare-bones client for a HTTP service.  It checks for an output
+: string from a /status endpoint and returns it to the caller.
 
 * Testing network services (cont.)
 
@@ -201,12 +346,36 @@ to set up a self-contained HTTP server.
 A Client is created and pointed to the test server, and a "done" closure is
 returned to clean up resources.
 
+: To enable easily testing our Client, we want to be able to point it to an
+: isolated HTTP server, and allow easy cleanup of resources at the end of
+: our tests.
+#
+: By accepting a function with the correct signature for the http.Handler
+: interface, we are able to spin up an isolated HTTP test server which runs
+: our function on each HTTP request.
+#
+: Returning a closure allows the caller to easily perform cleanup of any
+: intermediate state.  More actions could be added to the closure, such as
+: cleaning up a database, closing socket listeners, etc.
+
 * Testing network services (cont.)
 
 Using `testClient()` is simple!  It enables testing that the Client's HTTP request sends
 correct data.  It also enables mocking the HTTP response.
 
 .code self-contained-testing-in-go/4/client_test.go /START TEST OMIT/,/END TEST OMIT/
+
+: Using the testClient is simple!  Calling the function gives us a Client that
+: is pointed at the isolated HTTP test server.
+#
+: Making any HTTP requests with the client will cause code from the closure to
+: be invoked.
+#
+: This way, we can check that a Client method sends a HTTP request to the
+: correct path, with the correct HTTP method, headers, etc.
+#
+: Finally, we can write arbitrary output back to our Client, to ensure it
+: appropriately handles both good and bad inputs.
 
 * Testing network services (cont.)
 
@@ -216,15 +385,27 @@ Example: calling `net.Listen("tcp", ":0")` will create a TCP listener on a rando
 
 You can create a `net/http/httptest`-like API for all kinds of network services.
 
+: With a little bit of work, you can build a type similar to the
+: net/http/httptest test server.
+#
+: Just open a TCP or UDP connection with port specified to 0 to allow the OS
+: to pick an appropriate port.
+#
+: Create your Client type and point it at your test server.
+#
+: Allow the test server and resources to be gracefully cleaned up using a closure.
+
 * Testing with a database
 
 This pattern can also be applied to database connections.
 
-If we wanted to set up and tear down a database during a test:
-
 	func TestDB(t *testing.T) {
 		err := withDB(t, func(db *sql.DB) error {
-			return testDBReadWrite(t, db)
+			// Could be wrapped in subtests!
+			testDBCreate(t, db)
+			testDBReadWrite(t, db)
+			testDBTruncuate(t, db)
+			return nil
 		})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -240,6 +421,19 @@ If we wanted to set up and tear down a database during a test:
 
 Can be useful to use SQLite or similar during tests!
 
+: In this case, we create a SQL database handle that only exists for the
+: duration of our closure.
+#
+: The withDB helper handles setup and teardown of database connections, or
+: any external state.
+#
+: We can run a series of tests, possibly as sub-tests, using the same database
+: handle.
+#
+: If you use standard SQL queries, this can be used to run your tests with a
+: temporary, in-memory, SQLite database, even if your production code connects
+: to MySQL, PostgreSQL, or similar.
+
 * Takeaways
 
 - Keep tests as self-contained as possible
@@ -247,3 +441,18 @@ Can be useful to use SQLite or similar during tests!
 - Mock filesystem interactions using interfaces
 - Mock client/server interactions using temporary test servers
 - Tidy up tedious setup and teardown code using closures
+
+: There are a lot of great techniques out there for writing self-contained,
+: elegant tests in Go.
+#
+: I've only had time to cover a handful of them today, but I encourage you to
+: do some research and experiment to find the approach that works best for
+: you.
+#
+: Isolating your tests from each other makes tests far less fragile, and
+: makes them enjoyable to write.
+#
+: If you come up with a pattern you really love, I'd love to hear about it!
+#
+: Thank you very much for your time!  I'd be happy to answer any questions
+: you may have.
