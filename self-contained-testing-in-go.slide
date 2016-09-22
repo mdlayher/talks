@@ -128,6 +128,49 @@ Sub-tests are new in Go 1.7.  Use them to run single test cases.
 	PASS
 	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/3        0.001s
 
+* Testing using the filesystem
+
+On Linux, `/proc` contains a lot of useful info.
+
+We want to parse `/proc/cmdline` to retrieve boot parameters.
+
+How can we test this on non-Linux machines?
+
+* Testing using the filesystem (cont.)
+
+Here's a first pass at a function to read `/proc/cmdline`.
+
+How can we test this function without depending on the filesystem?
+
+.code self-contained-testing-in-go/5/cmdline.go /START CMDLINE OMIT/,/END CMDLINE OMIT/
+
+Error handling omitted for brevity.  Please check all errors in production code.
+
+* Testing using the filesystem (cont.)
+
+The `io.Reader` interface is the answer!
+
+By creating a function that accepts an `io.Reader`, we can use a wide variety
+of types as input for our tests.
+
+.code self-contained-testing-in-go/5/cmdline.go /START IOREADER OMIT/,/END IOREADER OMIT/
+
+* Testing using the filesystem (cont.)
+
+Using table-driven tests, we can pass any `io.Reader` to our function for
+testing.  `strings.NewReader()` wraps a string as an `io.Reader`.
+
+.code self-contained-testing-in-go/5/cmdline_test.go /START TESTTABLE OMIT/,/END TESTTABLE OMIT/
+
+* Testing using the filesystem (cont.)
+
+This should look familiar!
+
+No need to rely on the filesystem for tests if we can mock the data
+using interfaces.
+
+.code self-contained-testing-in-go/5/cmdline_test.go /START TESTLOOP OMIT/,/END TESTLOOP OMIT/
+
 * Testing network services
 
 Suppose we have a Client type that we want to test with mock data.
@@ -201,5 +244,6 @@ Can be useful to use SQLite or similar during tests!
 
 - Keep tests as self-contained as possible
 - Make use of table-driven tests with subtests
-- Mock client/server interactions using no external services
+- Mock filesystem interactions using interfaces
+- Mock client/server interactions using temporary test servers
 - Tidy up tedious setup and teardown code using closures
