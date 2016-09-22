@@ -32,7 +32,7 @@ func TestDivide(t *testing.T) {
 
 			// START CHECK OMIT
 			if want, got := tt.err, err; want != got {
-				t.Fatalf("unexpected error:\n- want: %v\n - got: %v",
+				t.Fatalf("unexpected error:\n- want: %#v\n-  got: %#v",
 					want, got)
 			}
 			// END CHECK OMIT
