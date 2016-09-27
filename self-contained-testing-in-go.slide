@@ -10,7 +10,7 @@ mdlayher@do.co
 
 - Software Engineer on the Cloud Engineering: Network team (#swe-net)
 - Lover of all types of craft beer (#beer)
-- Opinionated Gopher (#golang!)
+- Go programmer for ~3 years (#golang!)
 
 * Testing in Go
 
@@ -82,11 +82,6 @@ But what happens when we try to divide by zero?
 
 .play self-contained-testing-in-go/2/divide.go
 
-: In elementary school, I learned that dividing any number by zero produces the
-: result 0.
-#
-: Turns out, this isn't quite correct.
-#
 : What happens when we run this code with variable b set to 0?
 #
 : We get a panic and a stacktrace.  Not a very friendly user experience.
@@ -131,9 +126,6 @@ each test a name helps with "sub-tests", as we'll see shortly.
 #
 : Table-driven tests are great for checking the output of math functions,
 : string parsing functions, etc.
-#
-: However, they are not always so great for network services.  We'll get to that
-: a little later on.
 
 * Table-driven tests (cont.)
 
@@ -226,9 +218,6 @@ How can we test this on non-Linux machines?
 #
 : Whenever possible, make sure that you are able to appropriately mock
 : interactions with a filesystem.
-#
-: This can be done with interfaces or clever use of closures, but today,
-: we'll talk about a very simple solution.
 
 * Testing using the filesystem (cont.)
 
@@ -264,13 +253,6 @@ of types as input for our tests.
 : 100% code coverage often isn't necessary to produce quality tests.  In
 : this case, we trust that os.Open does what we would expect, and only
 : worry about parsing the output of the file.
-#
-: It isn't recommended to use ioutil.ReadAll for large files, but since this
-: particular file is rather small, it's acceptable to use here.
-#
-: By assigning the "no boot image" error to a variable, we are able to use
-: that variable in tests to check that malformed output is appropriately
-: rejected.
 #
 : Again, this is just one solution to the problem.  A more intricate solution
 : could stub filesystem interactions using an interface.  For our purposes,
@@ -319,11 +301,15 @@ external services makes tests difficult to run.
 
 Closures are the perfect solution to our problem.
 
+: We want to write a Client for a HTTP services, and verify that it can
+: properly perform requests against the service.
+#
 : Ideally, a test should not depend on any external service or state to
 : work properly.
 #
 : Go provides a rather elegant solution to the problem of testing HTTP-based
-: services.
+: services.  We can wrap this up nicely to prevent repeated setup and teardown
+: code.
 
 * Testing network services (cont.)
 
@@ -445,14 +431,8 @@ Can be useful to use SQLite or similar during tests!
 : There are a lot of great techniques out there for writing self-contained,
 : elegant tests in Go.
 #
-: I've only had time to cover a handful of them today, but I encourage you to
-: do some research and experiment to find the approach that works best for
-: you.
-#
 : Isolating your tests from each other makes tests far less fragile, and
 : makes them enjoyable to write.
-#
-: If you come up with a pattern you really love, I'd love to hear about it!
 #
 : Thank you very much for your time!  I'd be happy to answer any questions
 : you may have.
