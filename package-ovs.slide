@@ -1,0 +1,74 @@
+package ovs
+30 Sep 2016
+
+Matt Layher
+Software Engineer, DigitalOcean
+mdlayher@do.co
+@mdlayher
+
+* Introduction
+
+Open vSwitch is a virtual network switch used to provide connectivity
+to virtual machines running on hypervisors.
+
+Open vSwitch can be programmed to perform a series of actions on incoming
+traffic using OpenFlow flows.
+
+* Basic flows
+
+Most flows are fairly easy to comprehend once you understand how to read them.
+
+- Drop all traffic that ingresses on port 1
+
+	priority=0,in_port=1,table=0,idle_timeout=0,actions=drop
+
+- Drop TCP ingress traffic with a destination of port 80
+
+	priority=10,tcp,in_port=1,tp_dst=80,table=0,idle_timeout=0,actions=drop
+
+- Allow IPv4 ingress traffic with IPv4 `192.168.1.1` and MAC `de:ad:be:ef:de:ad`
+
+	priority=10,ip,in_port=1,dl_dst=de:ad:be:ef:de:ad,nw_dst=192.168.1.1,table=1,actions=output:1
+
+Flows can get _really_ complicated and become difficult to read and write.
+
+* package ovs
+
+Package `ovs` is a Go package that enables programmatic control of Open vSwitch.
+
+Package `ovs` provides the `ovs.Flow` type that reduces mental overhead and
+increases safety when reading and writing Open vSwitch flows.
+
+* package ovs (cont.)
+
+Flow fields expressed as basic Go types.  Matches and actions expressed as functions.
+
+Flows are validated in Go before they are ever allowed to reach Open vSwitch.
+
+	// priority=0,in_port=1,table=0,idle_timeout=0,actions=drop
+	f := &ovs.Flow{
+		InPort: 1,
+		Actions: []ovs.Action{ovs.ActionDrop()},
+	}
+
+	// priority=10,ip,in_port=1,dl_dst=de:ad:be:ef:de:ad,nw_dst=192.168.1.1,table=1,actions=output:1
+	f := &ovs.Flow{
+		Priority: 10,
+		Protocol: ovs.ProtocolIP,
+		InPort: 1,
+		Matches: []ovs.Match{
+			ovs.DataLinkDestination("de:ad:be:ef:de:ad"),
+			ovs.NetworkDestination("192.168.1.1"),
+		},
+		Table: 1,
+		Actions: []ovs.Action{ovs.ActionOutput(1)},
+	}
+
+
+* Future improvements
+
+- Marshaling of flows to binary format, in addition to text format
+
+- Full lexer/parser to tokenize flows and parse complicated actions
+
+- Open source package `ovs` (I hope!)
