@@ -1,0 +1,155 @@
+A brief intro to Go
+03 Mar 2017
+
+Matt Layher
+Software Engineer, DigitalOcean
+mdlayher@do.co
+@mdlayher
+
+* Introduction
+
+- Software Engineer at DigitalOcean on the Cloud Engineering: Network team.
+- Go programmer for ~3.5 years.
+- Interested in network protocols, distributed systems, systems programming.
+
+* What is Go?
+
+"Go is an open source programming language that makes it easy to build simple,
+reliable, and efficient software."
+.link https://golang.org
+
+- Emphasis on simplicity and readability.
+
+- Excellent tools like gofmt, golint, and go vet, that put an end to stylistic debates.
+
+- Seriously. gofmt is probably the best choice Go ever made.
+
+- First class concurrency primitives.
+
+- Statically linked binaries. Build, scp, run.
+
+- Cross compilation is a breeze.
+
+: These are all excellent language features, but my favorite things about Go are
+: the simplicity, readability, and tooling.
+#
+: They are unmatched in any language I've used to date.
+#
+: gofmt enforces exactly one correct style with no configuration.  No more trivial
+: debates about code style.
+#
+: First class concurrency is really handy, but new Go programmers do have a tendency
+: to overuse it.
+
+* Hello world
+
+- Go is a "C-like" language.
+
+.play a-brief-intro-to-go/1/main.go
+
+- Curly braces used to denote blocks.
+- No semicolons!
+
+: Package main denotes a binary.  Other package names are used for libraries.
+#
+: Import statement is used to bring in other packages.  Third party imports
+: are qualified with full repository names for GitHub repos and some others.
+
+* Functions, loops, and variables
+
+.play a-brief-intro-to-go/2/main.go
+
+: Go is a statically typed language.  Variable types must be specified, but
+: the special ':=' syntax can be used to infer the type of a variable
+: automatically from a statement on the right hand side.
+#
+: Only one type of loop: for.  Can do classic counting loops, conditional
+: loops akin to while, infinite loops, and foreach loops using range.
+#
+: Varidiac functions are possible in Go.  fmt.Printf is the most well known
+: one.
+
+* Slices vs. Arrays
+
+- A slice is essentially a "flexible view" over an array in memory.
+
+: Slices are typically used in Go, unless the exact fixed length property
+: of an array is useful.
+#
+: Slices can be grown using append.  Easy to make a slice from an array,
+: but slice elements have to be copied into an array to do the reverse.
+
+.play a-brief-intro-to-go/3/main.go
+
+* Structs, methods, and interfaces
+
+.play a-brief-intro-to-go/4/main.go
+
+: Go prefers composition to classical inheritance.  Types can have behaviors
+: defined by an interface.  In this case, an "Arear" is any type that has
+: an Area method.
+#
+: Types implicitly satisfy interfaces.  Types outside a package can satisfy
+: interfaces from that package.  See io.Reader and io.Writer in stdlib.
+
+* Comprehensive standard library
+
+- Want to build an HTTP server?  No problem.
+- http.Handler interface incredibly powerful.
+
+.play a-brief-intro-to-go/5/main.go
+
+: Any type with a ServeHTTP method and the correct signature can be used
+: to serve HTTP requests.  No need for "dependency injection containers":
+: just add your required dependencies as struct fields to handlers.
+
+* Concurrency primitives
+
+- Based on Tony Hoare's communicating sequential processes.
+
+- Goroutines: lightweight "threads". Very cheap to use.
+- Channels: enable passing messages in a concurrency safe way between goroutines.
+- Select: a more powerful switch statement.
+
+: Goroutines are similar to threads, but not quite.  Goroutines are a special
+: kind of "green thread" that can be multiplexed on top of OS threads.
+#
+: The Go runtime takes care of coordinating goroutines.  If an OS thread is
+: blocked on I/O, the runtime can schedule goroutines on other threads.
+
+* Concurrency primitives (cont.)
+
+.play a-brief-intro-to-go/6/main.go
+
+: It's a bit difficult to show great concurrency examples in a single slide.
+#
+: A goroutine is spun up in a closure in main.  It sends integer values on
+: a channel.  When the goroutine has no more values to send, it closes the
+: input channel.
+#
+: The sum function reads values off the channel as they arrive.  The loop
+: is terminated when the goroutine in main closes the input channel.
+
+* Concurreny primitives (cont.)
+
+.play a-brief-intro-to-go/7/main.go
+
+: Select statements can be used with other primitives to implement timeouts.
+#
+: If no result arrives on channel before 2 seconds pass, a timeout occurs
+: and the main goroutine exits the select statement.
+#
+: Additional work is needed to properly cancel longOperation.
+
+* Give Go a try!
+
+- Check out the Tour of Go.
+.link https://tour.golang.org/welcome/1
+
+- Go is being used for many large projects, like Kubernetes, Docker, and Prometheus.
+
+- I've written quite a few open source projects with Go, and use it at work too!
+.link https://github.com/mdlayher
+
+: I encourage you to give Go a try for your next project.  I've found it
+: to be a great language for almost anything I've wanted to do.

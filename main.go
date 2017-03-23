@@ -13,6 +13,8 @@ import (
 	"golang.org/x/tools/present"
 )
 
+//go:generate bash -c "go run main.go > README.md"
+
 // prefix is the base URL for the go-talks website with this repo's
 // name prefixed.
 const prefix = "http://go-talks.appspot.com/github.com/mdlayher/talks/"
