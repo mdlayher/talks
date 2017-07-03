@@ -9,3 +9,4 @@ Talks
 - [2016 Sep 30 - package ovs](http://go-talks.appspot.com/github.com/mdlayher/talks/package-ovs.slide)
 - [2017 Mar 03 - A brief intro to Go](http://go-talks.appspot.com/github.com/mdlayher/talks/a-brief-intro-to-go.slide)
 - [2017 Apr 19 - Open sourcing code at DigitalOcean](http://go-talks.appspot.com/github.com/mdlayher/talks/open-sourcing-code-at-digitalocean.slide)
+- [2017 Jul 15 - Ethernet and Go](http://go-talks.appspot.com/github.com/mdlayher/talks/ethernet-and-go.slide)

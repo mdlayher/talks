@@ -1,0 +1,98 @@
+Ethernet and Go
+15 Jul 2017
+
+Matt Layher
+Software Engineer, DigitalOcean
+mdlayher@gmail.com
+https://github.com/mdlayher
+@mdlayher
+
+* Problem statement
+
+Go's package `net` only provides IP, TCP, and UDP connectivity.
+
+- What if IP, TCP, and UDP are too high level?
+- What if I want to implement ARP?
+- What if I need full control over my application's traffic?
+
+* Solution
+
+Send and receive Ethernet frames directly in Go!
+
+.link https://github.com/mdlayher/ethernet
+.link https://github.com/mdlayher/raw
+
+* Introduction to Ethernet (II) frames
+
+Ethernet II frames are fundamental to Layer 2 data transmission.
+
+.image ethernet-and-go/frame.png
+.caption Source: https://en.wikipedia.org/wiki/Ethernet_frame#Ethernet_II
+
+- Destination and source MAC addresses
+- EtherType (what type of traffic does this frame carry?)
+- Payload
+- CRC checksum
+
+* Crafting Ethernet frames in Go
+
+Suppose we want to create a broadcast message:
+
+.code ethernet-and-go/1/frame.go /START 1 OMIT/,/END 1 OMIT/
+
+* Crafting Ethernet frames in Go (cont.)
+
+Marshal to binary and send over some interface:
+
+.code ethernet-and-go/1/frame.go /START 2 OMIT/,/END 2 OMIT/
+
+If you need a frame check sequence (FCS), call `f.MarshalFCS`.
+
+* Introduction to VLAN tags
+
+VLAN tags cleverly extend an Ethernet frame using a special EtherType.
+They enable splitting a physical network segment into many logical segments.
+
+.image ethernet-and-go/vlan.gif
+.caption Source: http://sclabs.blogspot.com/2014/10/ccnp-switch-vlans-and-trunks.html
+
+In this talk, we'll only cover the "VID", or VLAN ID.
+
+* VLAN tagging Ethernet frames in Go
+
+Let's say we only want machines on VLAN 10 to receive our message.
+
+.code ethernet-and-go/2/frame.go /START OMIT/,/END OMIT/
+
+* Sending and receiving Ethernet frames
+
+"Raw" or "packet" sockets enable direct transmission of Ethernet frames.
+
+.code ethernet-and-go/3/main.go /START 1 OMIT/,/END 1 OMIT/
+
+* Sending and receiving Ethernet frames (cont.)
+
+.code ethernet-and-go/3/main.go /START 2 OMIT/,/END 2 OMIT/
+
+* The future
+
+Maybe some versions of these packages could end up in `golang.org/x/net`!
+
+Future improvements:
+
+- Need to be able to hook into runtime network poller
+- Timeouts poorly implemented due to lack of poller support
+
+Maybe this can be resolved in Go 1.10!
+
+* More information
+
+Go packages for manipulating Ethernet frames and raw sockets:
+
+.link https://github.com/mdlayher/ethernet
+.link https://github.com/mdlayher/raw
+
+My blog, and the post that covers this information in greater detail:
+
+.link https://medium.com/@mdlayher
+.link https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1 Network Protocol Breakdown: Ethernet and Go
