@@ -1,0 +1,139 @@
+Open sourcing code at DigitalOcean
+19 Apr 2017
+
+Matt Layher
+Software Engineer, DigitalOcean
+mdlayher@do.co
+@mdlayher
+
+* Why open source?
+
+- The software we build is not only applicable to us.
+- Outside contributions provide features and improvements.
+- Open source software builds credibility for our organization.
+- Candidates care about a company's open source contributions.
+
+* What makes a project a good candidate for open source?
+
+Libraries, packages, gems...
+
+- Software that is built to tackle a single problem.
+- Software that can be easily composed with other software to solve larger problems.
+
+Applications, network services, APIs...
+
+- Full applications that solve a well-defind problem.
+- Easy to extend/integrate using a documented API.
+- NetBox is currently our most popular open source project.
+
+* What makes a project a good candidate for open source? (cont.)
+
+Let's think about a "hypervisor management daemon":
+
+- daemon needs to communicate with QEMU and libvirt
+- daemon may have DO-specific RPC and events mechanisms
+- daemon may make use of internal telemetry: metrics, logging, tracing
+
+The daemon itself meets the needs of DigitalOcean, but would be tough to
+use outside our environment.
+
+* What makes a project a good candidate for open source? (cont.)
+
+While the daemon itself may need to make use of internal systems,
+communicating with QEMU and libvirt are not problems specific to DO!
+
+- `go-qemu`
+- `go-libvirt`
+
+Perhaps a future iteration of said daemon could be generalized enough
+to become an open source project on its own.
+
+* What is the approval process to open source a project?
+
+There is a document that describes this at length, but the general flow is:
+
+- Write a summary of the project you wish to open-source
+- Get approval from manager, director, and product manager
+- Prepare code for release
+- Get final approval from technical lead and security
+- Coordinate release with community
+
+That document is authoritative: these slides just try to distill some of
+the major points!
+
+* What is the approval process to open source a project? (cont.)
+
+A summary should be written that describes the project, its goals, its
+intended audience, and how it will be maintained.
+
+- `go-qemu` provides a high-level interface for interacting with QEMU VMs
+- Apache 2 license, copyright DigitalOcean
+- Goal is to make every QMP command available in `go-qemu`
+- Solicit outside contributions by sharing on social media and company blog
+
+The summary should be emailed to your manager, director, and the product
+manager most impacted by this project for approval.
+
+* What is the approval process to open source a project? (cont.)
+
+To prepare the code for release, a few steps must be taken:
+
+- Add a README and LICENSE (Apache 2, copyright DigitalOcean)
+- Add license headers to each source file
+- Recommended: add a CONTRIBUTING.md that describes how to contribute
+- Recommended: set up CI using Travis
+
+* What is the approval process to open source a project? (cont.)
+
+Keep in mind:
+
+- Source code should _not_ be specific to DigitalOcean or our environment in any way.
+- Be careful about leaking potentially sensitive information (hyperlinks, credentials).
+- Technical lead and security team must give final approval.
+
+* Spread the word about the project!
+
+When the project is finally ready for release, coordinate with the
+Community and Social Media teams to spread the word!
+
+Sharing a project on Twitter, reddit, etc. can be a great way to find
+outside contributors and users.
+
+Ensure your project has great documentation to make it easy for new
+users to hit the ground running with it.
+
+* Maintaining an open source project
+
+Once a project has been released, maintaining it is key to the project's
+success.
+
+- Add a CONTRIBUTING document that explains criteria for contributions
+- Respond to issues in a timely manner
+- Provide polite, concise feedback on pull requests
+- Improve documentation in response to user feedback and questions
+
+* Maintaining an open source project (cont.)
+
+Chances are good that someone, at some point, will submit a large amount of
+code with no prior communication.
+
+Do your best to make your expectations for contributions clear.
+
+- Encourage users to file an issue before writing code.
+- Discuss a proposed design before writing code.
+
+* Unanswered questions
+
+There's still room for improvement in this process, and questions to be
+answered about open source at DigitalOcean.
+
+- What happens if a project's maintainer leaves DO?
+- What is the process for deprecating an open source project?
+- What happens if our software is taken and re-branded?
+
+* Summary
+
+- Open source rocks! I don't think we do enough.
+- Open source builds credibility, and can help us find new engineering talent.
+- We should upstream our changes to outside software wherever possible.
+- Contribute to open source whenever you can!
