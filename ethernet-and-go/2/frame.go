@@ -18,9 +18,9 @@ func main() {
 		Source: net.HardwareAddr{0xde, 0xad, 0xbe, 0xef, 0xde, 0xad},
 
 		// Tag traffic to VLAN 10.
-		VLAN: []*ethernet.VLAN{{
+		VLAN: &ethernet.VLAN{
 			ID: 10,
-		}},
+		},
 
 		// Identify frame with an unused EtherType.
 		EtherType: 0xcccc,
