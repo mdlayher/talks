@@ -15,12 +15,18 @@ Go's package `net` only provides IP, TCP, and UDP connectivity.
 - What if I want to implement ARP?
 - What if I need full control over my application's traffic?
 
+: Remember: slow down, stand still!
+: Let's start with a problem, and some questions to be answered.
+
 * Solution
 
 Send and receive Ethernet frames directly in Go!
 
 .link https://github.com/mdlayher/ethernet
 .link https://github.com/mdlayher/raw
+
+: Remember: slow down, stand still!
+: All of the code and packages that will be shown during this talk are available on GitHub.
 
 * Introduction to Ethernet (II) frames
 
@@ -34,11 +40,24 @@ Ethernet II frames are fundamental to Layer 2 data transmission.
 - Payload
 - CRC checksum
 
+: Remember: slow down, stand still!
+: Ethernet frames are the basic unit of data transmission for most networks today.
+: Source and destination MAC: where is traffic coming from, and where is it going?
+: EtherType: what type of traffic does this frame carry?
+: Payload: could be a header for another packet, or any arbitrary payload, really.
+: CRC checksum: ensures that the frame is not malformed when received by another machine.
+
 * Crafting Ethernet frames in Go
 
 Suppose we want to create a broadcast message:
 
 .code ethernet-and-go/1/frame.go /START 1 OMIT/,/END 1 OMIT/
+
+: Remember: slow down, stand still!
+: Our frame will be broadcast to all machines on our Layer 2 network segment.
+: The frame is sourced from our machine.
+: An unregistered EtherType is used to identify this traffic.
+: A message is sent as the payload: "hello world".
 
 * Crafting Ethernet frames in Go (cont.)
 
@@ -48,6 +67,11 @@ Marshal to binary and send over some interface:
 
 If you need a frame check sequence (FCS), call `f.MarshalFCS`.
 
+: Remember: slow down, stand still!
+: Now that we have our frame, we can marshal it into binary in the form of a byte slice.
+: The bytes can be transmitted directly over some network interface.
+: Most of the time, the OS handles FCS, but sometimes it can be useful to add your own (TAPs).
+
 * Introduction to VLAN tags
 
 VLAN tags cleverly extend an Ethernet frame using a special EtherType.
@@ -55,6 +79,11 @@ They enable splitting a physical network segment into many logical segments.
 
 .image ethernet-and-go/vlan.gif
 .caption Source: http://sclabs.blogspot.com/2014/10/ccnp-switch-vlans-and-trunks.html
+
+: Remember: slow down, stand still!
+: VLANs cleverly extend Ethernet frames using a value that looks like an EtherType.
+: VLANs are used to divide a physical network into many logical ones.
+: The VLAN ID is the important field for the purposes of this talk.
 
 In this talk, we'll only cover the "VID", or VLAN ID.
 
@@ -64,26 +93,49 @@ Let's say we only want machines on VLAN 10 to receive our message.
 
 .code ethernet-and-go/2/frame.go /START OMIT/,/END OMIT/
 
+: Remember: slow down, stand still!
+: This example is nearly identical to our previous one.
+: As you can see, we've added a VLAN to our frame with ID 10.
+: Only machines residing on VLAN 10 will receive this message.
+: But how can we transmit our frames over the network?
+
 * Sending and receiving Ethernet frames
 
 "Raw" or "packet" sockets enable direct transmission of Ethernet frames.
 
 .code ethernet-and-go/3/main.go /START 1 OMIT/,/END 1 OMIT/
 
+: Remember: slow down, stand still!
+: Most operating systems provide what are called raw or packet sockets.
+: These enable direct transmission of Ethernet frames.
+: In this example, we open a raw socket on eth0.
+: We want the socket to send and receive traffic with the same EtherType as our frames.
+
 * Sending and receiving Ethernet frames (cont.)
 
 .code ethernet-and-go/3/main.go /START 2 OMIT/,/END 2 OMIT/
+
+: Remember: slow down, stand still!
+: Once again, we'll create a frame with a "hello world" message, in its binary form.
+: We will send the frame over the socket to all devices on our network segment.
+: Once the frame is sent, we'd like to listen for replies!
+: We can read replies from other machines and unmarshal them into their Go forms for
+: further manipulation.
 
 * The future
 
 Maybe some versions of these packages could end up in `golang.org/x/net`!
 
-Future improvements:
-
 - Need to be able to hook into runtime network poller
 - Timeouts poorly implemented due to lack of poller support
 
 Maybe this can be resolved in Go 1.10!
+
+: Remember: slow down, stand still!
+: It would be great to focus our efforts as a community.
+: Perhaps we could create new packages for x/net that provide high quality APIs.
+: The biggest blocker is lack of ability to hook into the runtime network poller.
+: The poller provides efficient, cross-platform I/O with goroutines.
 
 * More information
 
@@ -96,3 +148,8 @@ My blog, and the post that covers this information in greater detail:
 
 .link https://medium.com/@mdlayher
 .link https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1 Network Protocol Breakdown: Ethernet and Go
+
+: Remember: slow down, stand still!
+: If you enjoyed this presentation and would like to learn more, refer to these links.
+: My GitHub packages enable these kinds of networking applications.
+: If you want a more in-depth explanation, see my blog: Network Protocol Breakdown: Ethernet and Go.
