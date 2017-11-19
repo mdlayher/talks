@@ -6,7 +6,7 @@ Talks by Matt Layher. MIT Licensed.
 Talks
 -----
 
-- OvS manipulation with Go at DigitalOcean [[slides](https://www.slideshare.net/LF_OpenvSwitch/lfovs17ovs-manipulation-with-go-at-digitalocean)]
+- Open vSwitch 2017 Fall Conference - OvS manipulation with Go at DigitalOcean [[slides](https://www.slideshare.net/LF_OpenvSwitch/lfovs17ovs-manipulation-with-go-at-digitalocean)]
   - How DigitalOcean controls Open vSwitch using the Go programming language.
 - [GopherCon 2017 - Lightning Talk: Ethernet and Go](https://www.youtube.com/watch?v=DgNiktCFuBg) [[slides](http://go-talks.appspot.com/github.com/mdlayher/talks/ethernet-and-go.slide#1)]
   - A lightning talk about using Ethernet frames and raw sockets directly in Go.
