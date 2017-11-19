@@ -1,0 +1,7 @@
+{
+    "VideoLink": "",
+    "SlidesLink": "https://www.slideshare.net/LF_OpenvSwitch/lfovs17ovs-manipulation-with-go-at-digitalocean",
+    "Time": "2017-11-17T11:00:00Z",
+    "Description": "How DigitalOcean controls Open vSwitch using the Go programming language.",
+    "Title": "OvS manipulation with Go at DigitalOcean"
+}
