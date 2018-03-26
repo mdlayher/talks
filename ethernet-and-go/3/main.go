@@ -17,7 +17,7 @@ func main() {
 	}
 
 	// Open a raw socket using same EtherType as our frame.
-	c, err := raw.ListenPacket(ifi, 0xcccc)
+	c, err := raw.ListenPacket(ifi, 0xcccc, nil)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
