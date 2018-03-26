@@ -26,10 +26,14 @@ func Scan(r io.Reader) ([]CPUStat, error) {
 
 	var stats []CPUStat
 	for s.Scan() {
-		// Each CPU stats line should have exactly 11 fields.
+		// Each CPU stats line should have a "cpu" prefix and exactly
+		// 11 fields.
 		const nFields = 11
 		fields := strings.Fields(string(s.Bytes()))
 		if len(fields) != nFields {
+			continue
+		}
+		if !strings.HasPrefix(fields[0], "cpu") {
 			continue
 		}
 
