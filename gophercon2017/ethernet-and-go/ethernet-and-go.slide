@@ -32,7 +32,7 @@ Send and receive Ethernet frames directly in Go!
 
 Ethernet II frames are fundamental to Layer 2 data transmission.
 
-.image ethernet-and-go/frame.png
+.image frame.png
 .caption Source: https://en.wikipedia.org/wiki/Ethernet_frame#Ethernet_II
 
 - Destination and source MAC addresses
@@ -51,7 +51,7 @@ Ethernet II frames are fundamental to Layer 2 data transmission.
 
 Suppose we want to create a broadcast message:
 
-.code ethernet-and-go/1/frame.go /START 1 OMIT/,/END 1 OMIT/
+.code 1/frame.go /START 1 OMIT/,/END 1 OMIT/
 
 : Remember: slow down, stand still!
 : Our frame will be broadcast to all machines on our Layer 2 network segment.
@@ -63,7 +63,7 @@ Suppose we want to create a broadcast message:
 
 Marshal to binary and send over some interface:
 
-.code ethernet-and-go/1/frame.go /START 2 OMIT/,/END 2 OMIT/
+.code 1/frame.go /START 2 OMIT/,/END 2 OMIT/
 
 If you need a frame check sequence (FCS), call `f.MarshalFCS`.
 
@@ -77,7 +77,7 @@ If you need a frame check sequence (FCS), call `f.MarshalFCS`.
 VLAN tags cleverly extend an Ethernet frame using a special EtherType.
 They enable splitting a physical network segment into many logical segments.
 
-.image ethernet-and-go/vlan.gif
+.image vlan.gif
 .caption Source: http://sclabs.blogspot.com/2014/10/ccnp-switch-vlans-and-trunks.html
 
 : Remember: slow down, stand still!
@@ -91,7 +91,7 @@ In this talk, we'll only cover the "VID", or VLAN ID.
 
 Let's say we only want machines on VLAN 10 to receive our message.
 
-.code ethernet-and-go/2/frame.go /START OMIT/,/END OMIT/
+.code 2/frame.go /START OMIT/,/END OMIT/
 
 : Remember: slow down, stand still!
 : This example is nearly identical to our previous one.
@@ -103,7 +103,7 @@ Let's say we only want machines on VLAN 10 to receive our message.
 
 "Raw" or "packet" sockets enable direct transmission of Ethernet frames.
 
-.code ethernet-and-go/3/main.go /START 1 OMIT/,/END 1 OMIT/
+.code 3/main.go /START 1 OMIT/,/END 1 OMIT/
 
 : Remember: slow down, stand still!
 : Most operating systems provide what are called raw or packet sockets.
@@ -113,7 +113,7 @@ Let's say we only want machines on VLAN 10 to receive our message.
 
 * Sending and receiving Ethernet frames (cont.)
 
-.code ethernet-and-go/3/main.go /START 2 OMIT/,/END 2 OMIT/
+.code 3/main.go /START 2 OMIT/,/END 2 OMIT/
 
 : Remember: slow down, stand still!
 : Once again, we'll create a frame with a "hello world" message, in its binary form.

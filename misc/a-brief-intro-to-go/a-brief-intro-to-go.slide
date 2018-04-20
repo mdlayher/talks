@@ -45,7 +45,7 @@ reliable, and efficient software."
 
 - Go is a "C-like" language.
 
-.play a-brief-intro-to-go/1/main.go
+.play 1/main.go
 
 - Curly braces used to denote blocks.
 - No semicolons!
@@ -57,7 +57,7 @@ reliable, and efficient software."
 
 * Functions, loops, and variables
 
-.play a-brief-intro-to-go/2/main.go
+.play 2/main.go
 
 : Go is a statically typed language.  Variable types must be specified, but
 : the special ':=' syntax can be used to infer the type of a variable
@@ -79,11 +79,11 @@ reliable, and efficient software."
 : Slices can be grown using append.  Easy to make a slice from an array,
 : but slice elements have to be copied into an array to do the reverse.
 
-.play a-brief-intro-to-go/3/main.go
+.play 3/main.go
 
 * Structs, methods, and interfaces
 
-.play a-brief-intro-to-go/4/main.go
+.play 4/main.go
 
 : Go prefers composition to classical inheritance.  Types can have behaviors
 : defined by an interface.  In this case, an "Arear" is any type that has
@@ -97,7 +97,7 @@ reliable, and efficient software."
 - Want to build an HTTP server?  No problem.
 - http.Handler interface incredibly powerful.
 
-.play a-brief-intro-to-go/5/main.go
+.play 5/main.go
 
 : Any type with a ServeHTTP method and the correct signature can be used
 : to serve HTTP requests.  No need for "dependency injection containers":
@@ -119,7 +119,7 @@ reliable, and efficient software."
 
 * Concurrency primitives (cont.)
 
-.play a-brief-intro-to-go/6/main.go
+.play 6/main.go
 
 : It's a bit difficult to show great concurrency examples in a single slide.
 #
@@ -132,7 +132,7 @@ reliable, and efficient software."
 
 * Concurreny primitives (cont.)
 
-.play a-brief-intro-to-go/7/main.go
+.play 7/main.go
 
 : Select statements can be used with other primitives to implement timeouts.
 #

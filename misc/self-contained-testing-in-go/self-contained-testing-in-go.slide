@@ -52,7 +52,7 @@ Integration tests with MySQL, redis, etc. are out of scope for this talk.
 
 Let's start with a simple example!
 
-.play self-contained-testing-in-go/1/divide.go
+.play 1/divide.go
 
 : This code works as-is, and if we hit Run, it produces an output we expect.
 #
@@ -63,13 +63,13 @@ Let's start with a simple example!
 A first pass at a test for function `Divide()`.  Tests using a single pair of
 inputs to produce an expected output.
 
-.code self-contained-testing-in-go/1/divide_test.go
+.code 1/divide_test.go
 
 	$ go test -v .
 	=== RUN   TestDivide
 	--- PASS: TestDivide (0.00s)
 	PASS
-	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/1  0.001s
+	ok      _/home/matt/src/github.com/mdlayher/talks/1  0.001s
 
 : We can write a test for this code rather easily.  This test is acceptable,
 : but it only covers a single case.
@@ -80,7 +80,7 @@ inputs to produce an expected output.
 
 But what happens when we try to divide by zero?
 
-.play self-contained-testing-in-go/2/divide.go
+.play 2/divide.go
 
 : What happens when we run this code with variable b set to 0?
 #
@@ -95,7 +95,7 @@ But what happens when we try to divide by zero?
 We can protect against division by zero by checking if `b == 0` before
 performing the division operation.
 
-.play self-contained-testing-in-go/3/divide.go /START OMIT/,/END OMIT/
+.play 3/divide.go /START OMIT/,/END OMIT/
 
 Now that `Divide()` can return either a valid result or an error, we should write
 tests which check for both results.
@@ -117,7 +117,7 @@ When testing more than one case for a simple function, use table-driven tests!
 Make a table of tests with various inputs, outputs, and expected errors.  Giving
 each test a name helps with "sub-tests", as we'll see shortly.
 
-.code self-contained-testing-in-go/3/divide_test.go /START TABLE OMIT/,/END TABLE OMIT/
+.code 3/divide_test.go /START TABLE OMIT/,/END TABLE OMIT/
 
 : Table-driven tests are one of my favorite constructs in Go.
 #
@@ -132,7 +132,7 @@ each test a name helps with "sub-tests", as we'll see shortly.
 For each test table case, create a sub-test with the given name, and then
 check the results of `Divide()` against the results from the test table.
 
-.code self-contained-testing-in-go/3/divide_test.go /START LOOP OMIT/,/END LOOP OMIT/
+.code 3/divide_test.go /START LOOP OMIT/,/END LOOP OMIT/
 
 : The actual testing happens within the loop of a table-driven test.
 #
@@ -150,7 +150,7 @@ modifying them in the future.
 
 Need only change what is assigned to `want` and `got`.
 
-.code self-contained-testing-in-go/3/divide_test.go /START CHECK OMIT/,/END CHECK OMIT/
+.code 3/divide_test.go /START CHECK OMIT/,/END CHECK OMIT/
 
 Nice output format for when your tests aren't passing.
 
@@ -183,7 +183,7 @@ that indicates exactly which test cases are passing or failing.
 		--- PASS: TestDivide/divide_by_zero (0.00s)
 		--- PASS: TestDivide/OK (0.00s)
 	PASS
-	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/3        0.001s
+	ok      _/home/matt/src/github.com/mdlayher/talks/3        0.001s
 
 Sub-tests are new in Go 1.7.  Use them to run single test cases.
 
@@ -193,7 +193,7 @@ Sub-tests are new in Go 1.7.  Use them to run single test cases.
 	--- PASS: TestDivide (0.00s)
 	--- PASS: TestDivide/divide_by_zero (0.00s)
 	PASS
-	ok      _/home/matt/src/github.com/mdlayher/talks/self-contained-testing-in-go/3        0.001s
+	ok      _/home/matt/src/github.com/mdlayher/talks/3        0.001s
 
 : I cannot recommend sub-tests enough.  They allow you to break your monolithic
 : tests into smaller chunks that can be run individually.
@@ -225,7 +225,7 @@ Here's a first pass at a function to read `/proc/cmdline`.
 
 How can we test this function without depending on the filesystem?
 
-.code self-contained-testing-in-go/5/cmdline.go /START CMDLINE OMIT/,/END CMDLINE OMIT/
+.code 5/cmdline.go /START CMDLINE OMIT/,/END CMDLINE OMIT/
 
 Error handling omitted for brevity.  Please check all errors in production code.
 
@@ -245,7 +245,7 @@ The `io.Reader` interface is the answer!
 By creating a function that accepts an `io.Reader`, we can use a wide variety
 of types as input for our tests.
 
-.code self-contained-testing-in-go/5/cmdline.go /START IOREADER OMIT/,/END IOREADER OMIT/
+.code 5/cmdline.go /START IOREADER OMIT/,/END IOREADER OMIT/
 
 : By separating the concern of opening the file and parsing its output,
 : we are able to easily create a much more testable function.
@@ -263,7 +263,7 @@ of types as input for our tests.
 Using table-driven tests, we can pass any `io.Reader` to our function for
 testing.  `strings.NewReader()` wraps a string as an `io.Reader`.
 
-.code self-contained-testing-in-go/5/cmdline_test.go /START TESTTABLE OMIT/,/END TESTTABLE OMIT/
+.code 5/cmdline_test.go /START TESTTABLE OMIT/,/END TESTTABLE OMIT/
 
 : Test tables are a great solution for testing the new ParseCommandLine
 : function.
@@ -281,7 +281,7 @@ This should look familiar!
 No need to rely on the filesystem for tests if we can mock the data
 using interfaces.
 
-.code self-contained-testing-in-go/5/cmdline_test.go /START TESTLOOP OMIT/,/END TESTLOOP OMIT/
+.code 5/cmdline_test.go /START TESTLOOP OMIT/,/END TESTLOOP OMIT/
 
 : The test loop looks very similar to our previous test loop.
 #
@@ -315,7 +315,7 @@ Closures are the perfect solution to our problem.
 
 A simple HTTP client which checks for an output string from a `/status` endpoint.
 
-.code self-contained-testing-in-go/4/client.go /START CLIENT OMIT/,/END CLIENT OMIT/
+.code 4/client.go /START CLIENT OMIT/,/END CLIENT OMIT/
 
 Error handling omitted for brevity.  Please check all errors in production code.
 
@@ -327,7 +327,7 @@ Error handling omitted for brevity.  Please check all errors in production code.
 We create a test helper, `testClient()`, which makes use of `net/http/httptest`
 to set up a self-contained HTTP server.
 
-.code self-contained-testing-in-go/4/client_test.go /START TESTCLIENT OMIT/,/END TESTCLIENT OMIT/
+.code 4/client_test.go /START TESTCLIENT OMIT/,/END TESTCLIENT OMIT/
 
 A Client is created and pointed to the test server, and a "done" closure is
 returned to clean up resources.
@@ -349,7 +349,7 @@ returned to clean up resources.
 Using `testClient()` is simple!  It enables testing that the Client's HTTP request sends
 correct data.  It also enables mocking the HTTP response.
 
-.code self-contained-testing-in-go/4/client_test.go /START TEST OMIT/,/END TEST OMIT/
+.code 4/client_test.go /START TEST OMIT/,/END TEST OMIT/
 
 : Using the testClient is simple!  Calling the function gives us a Client that
 : is pointed at the isolated HTTP test server.
