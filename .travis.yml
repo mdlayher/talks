@@ -1,12 +1,12 @@
 language: go
 go:
   - 1.x.x
-sudo: required
 before_script:
   - go get -d ./...
   - sudo apt install jq
 script:
   - go build ./...
+  - ./.scripts/codegeneration.sh
   - go vet ./...
   - go test -v ./...
   - cat talks.json | jq .
