@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/mdlayher/talks/htepmfjaa/cpustat"
+	"github.com/mdlayher/talks/cnceu2018/htepmfjaa/cpustat"
 )
 
 func main() {

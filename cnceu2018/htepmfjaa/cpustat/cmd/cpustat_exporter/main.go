@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/mdlayher/talks/htepmfjaa/cpustat"
+	"github.com/mdlayher/talks/cnceu2018/htepmfjaa/cpustat"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )

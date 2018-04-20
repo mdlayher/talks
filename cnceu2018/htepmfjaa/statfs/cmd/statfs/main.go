@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mdlayher/talks/htepmfjaa/statfs"
+	"github.com/mdlayher/talks/cnceu2018/htepmfjaa/statfs"
 )
 
 func main() {
