@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.x
+  - 1.x.x
 sudo: required
 before_script:
   - go get -d ./...
