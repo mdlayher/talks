@@ -6,6 +6,8 @@ Talks by Matt Layher. MIT Licensed.
 Talks
 -----
 
+- Cloud Native Con EU 2018: How to export Prometheus metrics from just about anything [[slides](https://github.com/mdlayher/talks/blob/master/cnceu2018/htepmfjaa/how-to-export-prometheus-metrics-from-just-about-anything.pdf)]
+  - Gathering and exporting Prometheus metrics from files, devices, and system calls.
 - [Open vSwitch 2017 Fall Conference: OvS manipulation with Go at DigitalOcean](https://www.youtube.com/watch?v=45PpBbqB2Z0) [[slides](https://github.com/mdlayher/talks/blob/master/ovscon2017/ovs-manipulation-with-go-at-digitalocean.pdf)]
   - How DigitalOcean controls Open vSwitch using the Go programming language.
 - [GopherCon 2017 - Lightning Talk: Ethernet and Go](https://www.youtube.com/watch?v=DgNiktCFuBg) [[slides](http://go-talks.appspot.com/github.com/mdlayher/talks/gophercon2017/ethernet-and-go/ethernet-and-go.slide#1)]
