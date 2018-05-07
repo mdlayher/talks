@@ -1,7 +1,7 @@
 {
-    "VideoLink": "",
+    "VideoLink": "https://www.youtube.com/watch?v=Zk09Mbu0YQk",
     "SlidesLink": "https://github.com/mdlayher/talks/blob/master/cnceu2018/htepmfjaa/how-to-export-prometheus-metrics-from-just-about-anything.pdf",
     "Time": "2018-05-02T11:00:00Z",
     "Description": "Gathering and exporting Prometheus metrics with Go from files, devices, and system calls.",
-    "Title": "Cloud Native Con EU 2018: How to export Prometheus metrics from just about anything"
+    "Title": "KubeCon/Cloud Native Con EU 2018: How to export Prometheus metrics from just about anything"
 }
