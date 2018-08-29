@@ -1,0 +1,7 @@
+{
+    "VideoLink": "",
+    "SlidesLink": "https://github.com/mdlayher/talks/blob/master/gophercon2018/implementing-a-network-protocol-in-go.pdf",
+    "Time": "2018-08-29T11:00:00Z",
+    "Description": "Implementing the IPv6 Neighbor Discovery Protocol in Go.",
+    "Title": "GopherCon 2018: Implementing a Network Protocol in Go"
+}

@@ -6,6 +6,10 @@ Talks by Matt Layher. MIT Licensed.
 Talks
 -----
 
+- GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less! [[slides](https://github.com/mdlayher/talks/blob/master/gophercon2018/linux-netlink-and-go.pdf)]
+  - Manipulating the Linux kernel using Netlink with Go.
+- GopherCon 2018: Implementing a Network Protocol in Go [[slides](https://github.com/mdlayher/talks/blob/master/gophercon2018/implementing-a-network-protocol-in-go.pdf)]
+  - Implementing the IPv6 Neighbor Discovery Protocol in Go.
 - [KubeCon/Cloud Native Con EU 2018: How to export Prometheus metrics from just about anything](https://www.youtube.com/watch?v=Zk09Mbu0YQk) [[slides](https://github.com/mdlayher/talks/blob/master/cnceu2018/htepmfjaa/how-to-export-prometheus-metrics-from-just-about-anything.pdf)]
   - Gathering and exporting Prometheus metrics with Go from files, devices, and system calls.
 - [Open vSwitch 2017 Fall Conference: OvS manipulation with Go at DigitalOcean](https://www.youtube.com/watch?v=45PpBbqB2Z0) [[slides](https://github.com/mdlayher/talks/blob/master/ovscon2017/ovs-manipulation-with-go-at-digitalocean.pdf)]

@@ -1,0 +1,7 @@
+{
+    "VideoLink": "",
+    "SlidesLink": "https://github.com/mdlayher/talks/blob/master/gophercon2018/linux-netlink-and-go.pdf",
+    "Time": "2018-08-30T11:00:00Z",
+    "Description": "Manipulating the Linux kernel using Netlink with Go.",
+    "Title": "GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!"
+}
