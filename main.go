@@ -168,5 +168,5 @@ Talks
 {{range .}}
 - {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Description}}
   - {{.Description}}{{end}}
-  - {{if .AudioLink}}[[audio]({{.AudioLink}})]{{end}}{{if .BlogLink}} [[blog]({{.BlogLink}})]{{end}}{{if .SlidesLink}} [[slides]({{.SlidesLink}})]{{end}}{{end}}
+  -{{if .AudioLink}} [[audio]({{.AudioLink}})]{{end}}{{if .BlogLink}} [[blog]({{.BlogLink}})]{{end}}{{if .SlidesLink}} [[slides]({{.SlidesLink}})]{{end}}{{end}}
 `)))
