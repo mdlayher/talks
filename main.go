@@ -150,9 +150,10 @@ type presentation struct {
 	Title       string
 	Description string
 	Time        time.Time
+	AudioLink   string
+	BlogLink    string
 	SlidesLink  string
 	VideoLink   string
-	BlogLink    string
 }
 
 // markdown is the markdown template for README.md.
@@ -164,9 +165,8 @@ Talks by Matt Layher. MIT Licensed.
 
 Talks
 -----
-{{range .}}{{if .VideoLink}}
-- [{{.Title}}]({{.VideoLink}}) [[slides]({{.SlidesLink}})]{{if .BlogLink}} [[blog]({{.BlogLink}})]{{end}}{{if .Description}}
-  - {{.Description}}{{end}}{{else}}
-- {{.Title}} [[slides]({{.SlidesLink}})]{{if .BlogLink}} [[blog]({{.BlogLink}})]{{end}}{{if .Description}}
-  - {{.Description}}{{end}}{{end}}{{end}}
+{{range .}}
+- {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Description}}
+  - {{.Description}}{{end}}
+  - {{if .AudioLink}}[[audio]({{.AudioLink}})]{{end}}{{if .BlogLink}} [[blog]({{.BlogLink}})]{{end}}{{if .SlidesLink}} [[slides]({{.SlidesLink}})]{{end}}{{end}}
 `)))
