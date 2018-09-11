@@ -6,7 +6,7 @@ Talks by Matt Layher. MIT Licensed.
 Talks
 -----
 
-- GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!
+- [GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!](https://www.youtube.com/watch?v=tw-9fNygYE4)
   - Manipulating the Linux kernel using Netlink with Go.
   - [[blog](https://medium.com/@mdlayher/linux-netlink-and-go-part-1-netlink-4781aaeeaca8)] [[slides](https://github.com/mdlayher/talks/blob/master/gophercon2018/linux-netlink-and-go.pdf)]
 - [GopherCon 2018: Implementing a Network Protocol in Go](https://www.youtube.com/watch?v=pUaFW98V1Sc)
