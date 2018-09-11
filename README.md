@@ -9,7 +9,7 @@ Talks
 - GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!
   - Manipulating the Linux kernel using Netlink with Go.
   - [[blog](https://medium.com/@mdlayher/linux-netlink-and-go-part-1-netlink-4781aaeeaca8)] [[slides](https://github.com/mdlayher/talks/blob/master/gophercon2018/linux-netlink-and-go.pdf)]
-- GopherCon 2018: Implementing a Network Protocol in Go
+- [GopherCon 2018: Implementing a Network Protocol in Go](https://www.youtube.com/watch?v=pUaFW98V1Sc)
   - Implementing the IPv6 Neighbor Discovery Protocol in Go.
   - [[blog](https://about.sourcegraph.com/go/gophercon-2018-implementing-a-network-protocol-in-go/)] [[slides](https://github.com/mdlayher/talks/blob/master/gophercon2018/implementing-a-network-protocol-in-go.pdf)]
 - OVS Orbit podcast: Networking with OVS at DigitalOcean
