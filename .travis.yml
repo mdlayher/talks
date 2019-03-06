@@ -3,6 +3,7 @@ go:
   - "1.x"
 before_script:
   - go get -d ./...
+  - sudo apt update
   - sudo apt install jq
 script:
   - go build ./...
