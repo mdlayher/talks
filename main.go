@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"log"
 	"net/url"
@@ -68,6 +69,19 @@ func main() {
 			return err
 		}
 
+		// Ensure valid resources.
+		for _, r := range p.Resources {
+			switch r.Kind {
+			case audio, blog, slides:
+			default:
+				log.Fatalf("unexpected resource kind for %q: %q", p.Time, r.Kind)
+			}
+
+			if r.Link == "" {
+				log.Fatalf("empty resource link for %q, kind %q", p.Title, r.Kind)
+			}
+		}
+
 		ps = append(ps, p)
 		return nil
 	})
@@ -87,7 +101,17 @@ func main() {
 	}
 	defer readme.Close()
 
-	if err := markdown.Execute(readme, ps); err != nil {
+	inputs := make([]input, 0, len(ps))
+	for _, p := range ps {
+		inputs = append(inputs, input{
+			Title:         p.Title,
+			Description:   p.Description,
+			VideoLink:     p.VideoLink,
+			ResourcesList: markdownList(p.Resources),
+		})
+	}
+
+	if err := markdown.Execute(readme, inputs); err != nil {
 		log.Fatalf("failed to execute template: %v", err)
 	}
 
@@ -141,7 +165,10 @@ func parsePresentation(path string, base *url.URL) (*presentation, error) {
 		Title:       doc.Title,
 		Description: doc.Subtitle,
 		Time:        doc.Time,
-		SlidesLink:  base.ResolveReference(u).String(),
+		Resources: []resource{{
+			Kind: slides,
+			Link: base.ResolveReference(u).String(),
+		}},
 	}, nil
 }
 
@@ -150,10 +177,43 @@ type presentation struct {
 	Title       string
 	Description string
 	Time        time.Time
-	AudioLink   string
-	BlogLink    string
-	SlidesLink  string
 	VideoLink   string
+	Resources   []resource
+}
+
+// A resource is a type of external content resource.
+type resource struct {
+	Kind kind
+	Link string
+}
+
+// A kind is a resource type.
+//
+// Video is explicitly not a kind because it is formatted differently in output.
+type kind string
+
+const (
+	audio  kind = "audio"
+	blog   kind = "blog"
+	slides kind = "slides"
+)
+
+// An input is an input for the README template.
+type input struct {
+	Title         string
+	Description   string
+	VideoLink     string
+	ResourcesList string
+}
+
+// markdownList generates a markdown-formatted string of resource links.
+func markdownList(resources []resource) string {
+	ss := make([]string, 0, len(resources))
+	for _, r := range resources {
+		ss = append(ss, fmt.Sprintf("[%s](%s)", r.Kind, r.Link))
+	}
+
+	return strings.Join(ss, ", ")
 }
 
 // markdown is the markdown template for README.md.
@@ -167,6 +227,6 @@ Talks
 -----
 {{range .}}
 - {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Description}}
-  - {{.Description}}{{end}}
-  -{{if .AudioLink}} [[audio]({{.AudioLink}})]{{end}}{{if .BlogLink}} [[blog]({{.BlogLink}})]{{end}}{{if .SlidesLink}} [[slides]({{.SlidesLink}})]{{end}}{{end}}
+  - {{.Description}}{{end}}{{if .ResourcesList}}
+  - {{.ResourcesList}}{{end}}{{end}}
 `)))
