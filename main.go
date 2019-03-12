@@ -20,7 +20,7 @@ import (
 const (
 	// prefix is the base URL for the go-talks website with this repo's
 	// name prefixed.
-	prefix = "http://go-talks.appspot.com/github.com/mdlayher/talks/"
+	prefix = "http://talks.godoc.org/github.com/mdlayher/talks/"
 
 	// talksJSON is the name of the JSON metadata file produced by this script.
 	talksJSON = "talks.json"
@@ -101,6 +101,8 @@ func main() {
 	}
 	defer readme.Close()
 
+	// Render the presentations in an input format suitable for the README
+	// markdown template.
 	inputs := make([]input, 0, len(ps))
 	for _, p := range ps {
 		inputs = append(inputs, input{
@@ -192,6 +194,7 @@ type resource struct {
 // Video is explicitly not a kind because it is formatted differently in output.
 type kind string
 
+// Known kind types. Any unrecognized type will result in an error.
 const (
 	audio  kind = "audio"
 	blog   kind = "blog"
