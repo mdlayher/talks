@@ -27,8 +27,8 @@ Talks
   - A lightning talk about using Ethernet frames and raw sockets directly in Go.
   - [blog](https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1), [slides](http://go-talks.appspot.com/github.com/mdlayher/talks/gophercon2017/ethernet-and-go/ethernet-and-go.slide#1)
 - A brief intro to Go
-  - [slides](http://go-talks.appspot.com/github.com/mdlayher/talks/misc/a-brief-intro-to-go/a-brief-intro-to-go.slide)
+  - [slides](http://talks.godoc.org/github.com/mdlayher/talks/misc/a-brief-intro-to-go/a-brief-intro-to-go.slide)
 - package ovs
-  - [slides](http://go-talks.appspot.com/github.com/mdlayher/talks/misc/package-ovs/package-ovs.slide)
+  - [slides](http://talks.godoc.org/github.com/mdlayher/talks/misc/package-ovs/package-ovs.slide)
 - Self-contained testing in Go
-  - [slides](http://go-talks.appspot.com/github.com/mdlayher/talks/misc/self-contained-testing-in-go/self-contained-testing-in-go.slide)
+  - [slides](http://talks.godoc.org/github.com/mdlayher/talks/misc/self-contained-testing-in-go/self-contained-testing-in-go.slide)
