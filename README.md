@@ -26,10 +26,10 @@ Talks
   - [slides](https://github.com/mdlayher/talks/blob/master/ovscon2017/ovs-manipulation-with-go-at-digitalocean.pdf)
 - [GopherCon 2017 - Lightning Talk: Ethernet and Go](https://www.youtube.com/watch?v=DgNiktCFuBg)
   - A lightning talk about using Ethernet frames and raw sockets directly in Go.
-  - [blog](https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1), [slides](http://go-talks.appspot.com/github.com/mdlayher/talks/gophercon2017/ethernet-and-go/ethernet-and-go.slide#1)
+  - [blog](https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1), [slides](https://talks.godoc.org/github.com/mdlayher/talks/gophercon2017/ethernet-and-go/ethernet-and-go.slide#1)
 - A brief intro to Go
-  - [slides](http://talks.godoc.org/github.com/mdlayher/talks/misc/a-brief-intro-to-go/a-brief-intro-to-go.slide)
+  - [slides](https://talks.godoc.org/github.com/mdlayher/talks/misc/a-brief-intro-to-go/a-brief-intro-to-go.slide)
 - package ovs
-  - [slides](http://talks.godoc.org/github.com/mdlayher/talks/misc/package-ovs/package-ovs.slide)
+  - [slides](https://talks.godoc.org/github.com/mdlayher/talks/misc/package-ovs/package-ovs.slide)
 - Self-contained testing in Go
-  - [slides](http://talks.godoc.org/github.com/mdlayher/talks/misc/self-contained-testing-in-go/self-contained-testing-in-go.slide)
+  - [slides](https://talks.godoc.org/github.com/mdlayher/talks/misc/self-contained-testing-in-go/self-contained-testing-in-go.slide)

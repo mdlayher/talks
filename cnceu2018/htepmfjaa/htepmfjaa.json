@@ -6,7 +6,7 @@
     "Resources": [
         {
             "Kind": "slides",
-            "Link": "https://github.com/mdlayher/talks/blob/master/cnceu2018/htepmfjaa/how-to-export-prometheus-metrics-from-just-about-anything.pdf"
+            "Link": "cnceu2018/htepmfjaa/how-to-export-prometheus-metrics-from-just-about-anything.pdf"
         }
     ]
 }

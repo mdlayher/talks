@@ -6,7 +6,7 @@
     "Resources": [
         {
             "Kind": "slides",
-            "Link": "https://github.com/mdlayher/talks/blob/master/orchestructure/exploring-ipv6-at-home/exploring-ipv6-at-home.pdf"
+            "Link": "orchestructure/exploring-ipv6-at-home/exploring-ipv6-at-home.pdf"
         }
     ]
 }

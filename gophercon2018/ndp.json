@@ -10,7 +10,7 @@
         },
         {
             "Kind": "slides",
-            "Link": "https://github.com/mdlayher/talks/blob/master/gophercon2018/implementing-a-network-protocol-in-go.pdf"
+            "Link": "gophercon2018/implementing-a-network-protocol-in-go.pdf"
         }
     ]
 }

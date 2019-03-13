@@ -6,7 +6,7 @@
     "Resources": [
         {
             "Kind": "slides",
-            "Link": "https://github.com/mdlayher/talks/blob/master/ovscon2017/ovs-manipulation-with-go-at-digitalocean.pdf"
+            "Link": "ovscon2017/ovs-manipulation-with-go-at-digitalocean.pdf"
         }
     ]
 }

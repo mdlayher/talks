@@ -10,7 +10,7 @@
         },
         {
             "Kind": "slides",
-            "Link": "http://go-talks.appspot.com/github.com/mdlayher/talks/gophercon2017/ethernet-and-go/ethernet-and-go.slide#1"
+            "Link": "https://talks.godoc.org/github.com/mdlayher/talks/gophercon2017/ethernet-and-go/ethernet-and-go.slide#1"
         }
     ]
 }

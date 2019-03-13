@@ -18,16 +18,20 @@ import (
 //go:generate go run main.go
 
 const (
-	// prefix is the base URL for the go-talks website with this repo's
-	// name prefixed.
-	prefix = "http://talks.godoc.org/github.com/mdlayher/talks/"
+	// talksPrefix is the base URL for the talks.godoc.org website with this
+	// repository's name prefixed.
+	talksPrefix = "https://talks.godoc.org/github.com/mdlayher/talks/"
+
+	// repoPrefix is the base URL for resources whose links are hosted in
+	// this repository.
+	repoPrefix = "https://github.com/mdlayher/talks/blob/master/"
 
 	// talksJSON is the name of the JSON metadata file produced by this script.
 	talksJSON = "talks.json"
 )
 
 func main() {
-	base, err := url.Parse(prefix)
+	base, err := url.Parse(talksPrefix)
 	if err != nil {
 		log.Fatalf("failed to parse base URL: %v", err)
 	}
@@ -70,7 +74,7 @@ func main() {
 		}
 
 		// Ensure valid resources.
-		for _, r := range p.Resources {
+		for i, r := range p.Resources {
 			switch r.Kind {
 			case audio, blog, slides:
 			default:
@@ -80,6 +84,14 @@ func main() {
 			if r.Link == "" {
 				log.Fatalf("empty resource link for %q, kind %q", p.Title, r.Kind)
 			}
+
+			// Post-processing for URLs relative to this repository.
+			link, err := resolveLink(repoPrefix, r.Link)
+			if err != nil {
+				log.Fatalf("failed to resolve resource link for %q: %v", p.Title, err)
+			}
+
+			p.Resources[i].Link = link
 		}
 
 		ps = append(ps, p)
@@ -217,6 +229,20 @@ func markdownList(resources []resource) string {
 	}
 
 	return strings.Join(ss, ", ")
+}
+
+func resolveLink(prefix, rel string) (string, error) {
+	pu, err := url.Parse(prefix)
+	if err != nil {
+		return "", err
+	}
+
+	relu, err := url.Parse(rel)
+	if err != nil {
+		return "", err
+	}
+
+	return pu.ResolveReference(relu).String(), nil
 }
 
 // markdown is the markdown template for README.md.
