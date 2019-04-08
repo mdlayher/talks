@@ -8,7 +8,7 @@ Talks
 
 - [Orchestructure, March 2019: Exploring IPv6 at Home: Preparing for the Future of the Internet Protocol](https://www.youtube.com/watch?v=_Mco3qgr4_I)
   - An overview of IPv6, and a demonstration of how to set up IPv4/6 dual-stack networks at home.
-  - [slides](https://github.com/mdlayher/talks/blob/master/orchestructure/exploring-ipv6-at-home/exploring-ipv6-at-home.pdf)
+  - [slides](https://github.com/mdlayher/talks/blob/master/meetups/orchestructure/exploring-ipv6-at-home/exploring-ipv6-at-home.pdf)
 - [GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!](https://www.youtube.com/watch?v=tw-9fNygYE4)
   - Manipulating the Linux kernel using Netlink with Go.
   - [blog](https://medium.com/@mdlayher/linux-netlink-and-go-part-1-netlink-4781aaeeaca8), [slides](https://github.com/mdlayher/talks/blob/master/gophercon2018/linux-netlink-and-go.pdf)
