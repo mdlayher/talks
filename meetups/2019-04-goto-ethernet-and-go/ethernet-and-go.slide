@@ -1,0 +1,121 @@
+Ethernet and Go
+17 Apr 2019
+
+Matt Layher
+Distributed Systems Engineer, Fastly
+mdlayher@gmail.com
+https://github.com/mdlayher
+https://mdlayher.com
+@mdlayher
+
+* Disclaimer
+
+I work for Fastly, but this work not related to Fastly in any way.
+
+* GopherCon 2017
+
+I originally presented this talk in 2017, but a lot has changed since then!
+
+.link https://www.youtube.com/watch?v=DgNiktCFuBg GopherCon 2017 - Lightning Talk: Matt Layher - Ethernet and Go
+
+Let's start from the beginning.
+
+* Problem statement
+
+Go's package `net` only provides IP, TCP, and UDP connectivity.
+
+- What if IP, TCP, and UDP are too high level?
+- What if I want to implement ARP?
+- What if I need full control over my application's traffic?
+
+* Solution
+
+Send and receive Ethernet frames directly in Go!
+
+.link https://github.com/mdlayher/ethernet
+.link https://github.com/mdlayher/raw
+
+* Introduction to Ethernet (II) frames
+
+Ethernet II frames are fundamental to Layer 2 data transmission.
+
+.image frame.png
+.caption Source: https://en.wikipedia.org/wiki/Ethernet_frame#Ethernet_II
+
+- Destination and source MAC addresses
+- EtherType (what type of traffic does this frame carry?)
+- Payload
+- CRC checksum
+
+* Crafting Ethernet frames in Go
+
+Suppose we want to create a broadcast message:
+
+.code 1/frame.go /START 1 OMIT/,/END 1 OMIT/
+
+* Crafting Ethernet frames in Go (cont.)
+
+Marshal to binary and send over some interface:
+
+.code 1/frame.go /START 2 OMIT/,/END 2 OMIT/
+
+If you need a frame check sequence (FCS), call `f.MarshalFCS`.
+
+* Introduction to VLAN tags
+
+VLAN tags cleverly extend an Ethernet frame using a special EtherType.
+They enable splitting a physical network segment into many logical segments.
+
+.image vlan.gif
+.caption Source: http://sclabs.blogspot.com/2014/10/ccnp-switch-vlans-and-trunks.html
+
+In this talk, we'll only cover the "VID", or VLAN ID.
+
+* VLAN tagging Ethernet frames in Go
+
+Let's say we only want machines on VLAN 10 to receive our message.
+
+.code 2/frame.go /START OMIT/,/END OMIT/
+
+* Sending and receiving Ethernet frames
+
+Low-level Ethernet sockets enable direct transmission of Ethernet frames.
+
+- Linux: `AF_PACKET`
+- macOS, *BSD: BPF devices
+- Windows: TODO, perhaps using `libpcap` or similar?
+
+.code 3/main.go /START 1 OMIT/,/END 1 OMIT/
+
+* Sending and receiving Ethernet frames (cont.)
+
+.code 3/main.go /START 2 OMIT/,/END 2 OMIT/
+
+* Package raw today
+
+- Timeouts fully implemented on Linux with Go 1.12 runtime network poller support
+- Implements `net.PacketConn`, but still a bit rough around the edges (`net.OpError`)
+- No plans to move to `golang.org/x/net`
+
+* Demo!
+
+.link https://github.com/mdlayher/ethernet/tree/master/cmd/etherecho github.com/mdlayher/ethernet/cmd/etherecho
+- Broadcasts a message to all machines in the same network segment
+
+.link https://github.com/mdlayher/raw github.com/mdlayher/raw
+- A look under the hood of the Linux system call implementation
+
+* More information
+
+Go packages for manipulating Ethernet frames and low-level sockets:
+
+.link https://github.com/mdlayher/ethernet
+.link https://github.com/mdlayher/raw
+
+The blog post that covers this information in greater detail:
+
+.link https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1 Network Protocol Breakdown: Ethernet and Go
+
+The prior version of this talk:
+
+.link https://www.youtube.com/watch?v=DgNiktCFuBg GopherCon 2017 - Lightning Talk: Matt Layher - Ethernet and Go

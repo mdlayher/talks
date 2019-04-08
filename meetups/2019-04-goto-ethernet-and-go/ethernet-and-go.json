@@ -1,0 +1,16 @@
+{
+    "VideoLink": "",
+    "Time": "2019-04-17T11:00:00Z",
+    "Description": "An updated presentation and demo of using Ethernet frames and sockets directly in Go.",
+    "Title": "GoTO, April 2019: Ethernet and Go",
+    "Resources": [
+        {
+            "Kind": "blog",
+            "Link": "https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1"
+        },
+        {
+            "Kind": "slides",
+            "Link": "https://talks.godoc.org/github.com/mdlayher/talks/meetups/2019-04-goto-ethernet-and-go/ethernet-and-go.slide#1"
+        }
+    ]
+}
