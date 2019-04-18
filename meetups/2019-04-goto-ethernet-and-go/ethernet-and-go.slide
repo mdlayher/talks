@@ -114,7 +114,7 @@ Go packages for manipulating Ethernet frames and low-level sockets:
 
 The blog post that covers this information in greater detail:
 
-.link https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1 Network Protocol Breakdown: Ethernet and Go
+.link https://mdlayher.com/blog/network-protocol-breakdown-ethernet-and-go/ Network Protocol Breakdown: Ethernet and Go
 
 The prior version of this talk:
 

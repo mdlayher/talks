@@ -6,7 +6,7 @@
     "Resources": [
         {
             "Kind": "blog",
-            "Link": "https://medium.com/@mdlayher/linux-netlink-and-go-part-1-netlink-4781aaeeaca8"
+            "Link": "https://mdlayher.com/blog/linux-netlink-and-go-part-1-netlink/"
         },
         {
             "Kind": "slides",

@@ -146,8 +146,8 @@ Go packages for manipulating Ethernet frames and raw sockets:
 
 My blog, and the post that covers this information in greater detail:
 
-.link https://medium.com/@mdlayher
-.link https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1 Network Protocol Breakdown: Ethernet and Go
+.link https://mdlayher.com/blog/
+.link https://mdlayher.com/blog/network-protocol-breakdown-ethernet-and-go/ Network Protocol Breakdown: Ethernet and Go
 
 : Remember: slow down, stand still!
 : If you enjoyed this presentation and would like to learn more, refer to these links.
