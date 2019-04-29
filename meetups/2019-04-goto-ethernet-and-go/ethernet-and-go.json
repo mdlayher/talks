@@ -1,5 +1,5 @@
 {
-    "VideoLink": "",
+    "VideoLink": "https://www.youtube.com/watch?v=PaAkgkysFvs",
     "Time": "2019-04-17T11:00:00Z",
     "Description": "An updated presentation and demo of using Ethernet frames and sockets directly in Go.",
     "Title": "GoTO, April 2019: Ethernet and Go",

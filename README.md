@@ -6,7 +6,7 @@ Talks by Matt Layher. MIT Licensed.
 Talks
 -----
 
-- GoTO, April 2019: Ethernet and Go
+- [GoTO, April 2019: Ethernet and Go](https://www.youtube.com/watch?v=PaAkgkysFvs)
   - An updated presentation and demo of using Ethernet frames and sockets directly in Go.
   - [blog](https://mdlayher.com/blog/network-protocol-breakdown-ethernet-and-go/), [slides](https://talks.godoc.org/github.com/mdlayher/talks/meetups/2019-04-goto-ethernet-and-go/ethernet-and-go.slide#1)
 - [Orchestructure, March 2019: Exploring IPv6 at Home: Preparing for the Future of the Internet Protocol](https://www.youtube.com/watch?v=_Mco3qgr4_I)
