@@ -102,7 +102,14 @@ func main() {
 		}
 		defer readme.Close()
 
-		if err := directory.Execute(readme, p); err != nil {
+		input := input{
+			Title:         p.Title,
+			Description:   p.Description,
+			VideoLink:     p.VideoLink,
+			ResourcesList: markdownList(p.Resources),
+		}
+
+		if err := directory.Execute(readme, input); err != nil {
 			log.Fatalf("failed to execute directory template: %v", err)
 		}
 
@@ -225,7 +232,7 @@ const (
 	slides kind = "slides"
 )
 
-// An input is an input for the README template.
+// An input is an input for the README templates.
 type input struct {
 	Title         string
 	Description   string
@@ -272,7 +279,10 @@ Talks by Matt Layher. MIT Licensed.
 
 // directory is the markdown template for individual directory README.md files.
 var directory = template.Must(template.New("directory.md").Parse(strings.TrimSpace(`
-# {{.Title}}
+# {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}
 
 {{.Description}}
+{{if .ResourcesList}}
+- {{.ResourcesList}}
+{{end}}
 `)))
