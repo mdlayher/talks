@@ -4,7 +4,6 @@ Talks by Matt Layher. MIT Licensed.
 
 ## Talks
 
-
 - GoCon Canada 2019: Using unsafe.Pointer to explore Linux system calls
   - Using Go&#39;s unsafe.Pointer type to cast raw memory and work with system calls.
   - [blog](https://mdlayher.com/blog/unsafe-pointer-and-system-calls/)
@@ -12,10 +11,10 @@ Talks by Matt Layher. MIT Licensed.
   - [slides](https://talks.godoc.org/github.com/mdlayher/talks/meetups/2019/04-goto/ethernet-and-go.slide)
 - [GoTO, April 2019: Ethernet and Go](https://www.youtube.com/watch?v=PaAkgkysFvs)
   - An updated presentation and demo of using Ethernet frames and sockets directly in Go.
-  - [blog](https://mdlayher.com/blog/network-protocol-breakdown-ethernet-and-go/), [slides](https://talks.godoc.org/github.com/mdlayher/talks/meetups/2019-04-goto-ethernet-and-go/ethernet-and-go.slide#1)
+  - [blog](https://mdlayher.com/blog/network-protocol-breakdown-ethernet-and-go/), [slides](https://talks.godoc.org/github.com/mdlayher/talks/meetups/2019/04-goto/ethernet-and-go.slide#1)
 - [Orchestructure, March 2019: Exploring IPv6 at Home: Preparing for the Future of the Internet Protocol](https://www.youtube.com/watch?v=_Mco3qgr4_I)
   - An overview of IPv6, and a demonstration of how to set up IPv4/6 dual-stack networks at home.
-  - [slides](https://github.com/mdlayher/talks/blob/master/meetups/orchestructure/exploring-ipv6-at-home/exploring-ipv6-at-home.pdf)
+  - [slides](https://github.com/mdlayher/talks/blob/master/meetups/2019/03-orchestructure/exploring-ipv6-at-home.pdf)
 - [GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!](https://www.youtube.com/watch?v=tw-9fNygYE4)
   - Manipulating the Linux kernel using Netlink with Go.
   - [blog](https://mdlayher.com/blog/linux-netlink-and-go-part-1-netlink/), [slides](https://github.com/mdlayher/talks/blob/master/conferences/2018/gophercon/linux-netlink-and-go.pdf)
