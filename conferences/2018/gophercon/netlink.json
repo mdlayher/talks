@@ -1,0 +1,16 @@
+{
+    "VideoLink": "https://www.youtube.com/watch?v=tw-9fNygYE4",
+    "Time": "2018-08-30T11:00:00Z",
+    "Description": "Manipulating the Linux kernel using Netlink with Go.",
+    "Title": "GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!",
+    "Resources": [
+        {
+            "Kind": "blog",
+            "Link": "https://mdlayher.com/blog/linux-netlink-and-go-part-1-netlink/"
+        },
+        {
+            "Kind": "slides",
+            "Link": "conferences/2018/gophercon/linux-netlink-and-go.pdf"
+        }
+    ]
+}

@@ -94,6 +94,18 @@ func main() {
 			p.Resources[i].Link = link
 		}
 
+		// Create a README for individual presentations, placing it at the same
+		// directory level as the presentation metadata.
+		readme, err := os.Create(filepath.Join(filepath.Dir(path), "README.md"))
+		if err != nil {
+			log.Fatalf("failed to create directory README: %v", err)
+		}
+		defer readme.Close()
+
+		if err := directory.Execute(readme, p); err != nil {
+			log.Fatalf("failed to execute directory template: %v", err)
+		}
+
 		ps = append(ps, p)
 		return nil
 	})
@@ -106,10 +118,10 @@ func main() {
 		return ps[i].Time.After(ps[j].Time)
 	})
 
-	// Generate README.md.
+	// Generate top-level README.md.
 	readme, err := os.Create("README.md")
 	if err != nil {
-		log.Fatalf("failed to create README: %v", err)
+		log.Fatalf("failed to create index README: %v", err)
 	}
 	defer readme.Close()
 
@@ -125,8 +137,8 @@ func main() {
 		})
 	}
 
-	if err := markdown.Execute(readme, inputs); err != nil {
-		log.Fatalf("failed to execute template: %v", err)
+	if err := index.Execute(readme, inputs); err != nil {
+		log.Fatalf("failed to execute index template: %v", err)
 	}
 
 	// Generate talks.json metadata.
@@ -245,17 +257,22 @@ func resolveLink(prefix, rel string) (string, error) {
 	return pu.ResolveReference(relu).String(), nil
 }
 
-// markdown is the markdown template for README.md.
-var markdown = template.Must(template.New("README.md").Parse(strings.TrimSpace(`
-talks [![Build Status](https://travis-ci.org/mdlayher/talks.svg?branch=master)](https://travis-ci.org/mdlayher/talks)
-=====
+// index is the markdown template for the top-level README.md.
+var index = template.Must(template.New("index.md").Parse(strings.TrimSpace(`
+# talks [![Build Status](https://travis-ci.org/mdlayher/talks.svg?branch=master)](https://travis-ci.org/mdlayher/talks)
 
 Talks by Matt Layher. MIT Licensed.
 
-Talks
------
+## Talks
 {{range .}}
 - {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Description}}
   - {{.Description}}{{end}}{{if .ResourcesList}}
   - {{.ResourcesList}}{{end}}{{end}}
+`)))
+
+// directory is the markdown template for individual directory README.md files.
+var directory = template.Must(template.New("directory.md").Parse(strings.TrimSpace(`
+# {{.Title}}
+
+{{.Description}}
 `)))

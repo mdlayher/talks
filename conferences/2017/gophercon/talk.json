@@ -1,0 +1,16 @@
+{
+    "VideoLink": "https://www.youtube.com/watch?v=DgNiktCFuBg",
+    "Time": "2017-07-15T11:00:00Z",
+    "Description": "A lightning talk about using Ethernet frames and raw sockets directly in Go.",
+    "Title": "GopherCon 2017 - Lightning Talk: Ethernet and Go",
+    "Resources": [
+        {
+            "Kind": "blog",
+            "Link": "https://mdlayher.com/blog/network-protocol-breakdown-ethernet-and-go/"
+        },
+        {
+            "Kind": "slides",
+            "Link": "https://talks.godoc.org/github.com/mdlayher/talks/conferences/2017/gophercon/ethernet-and-go.slide#1"
+        }
+    ]
+}
