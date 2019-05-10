@@ -1,4 +1,4 @@
-# [GopherCon 2018 - Lightning Talk: Linux, Netlink, and Go in 7 minutes or less!](https://www.youtube.com/watch?v=tw-9fNygYE4)
+# [Linux, Netlink, and Go in 7 minutes or less!](https://www.youtube.com/watch?v=tw-9fNygYE4) (GopherCon 2018, lightning talk)
 
 Manipulating the Linux kernel using Netlink with Go.
 

@@ -1,4 +1,4 @@
-# [Open vSwitch 2017 Fall Conference: OvS manipulation with Go at DigitalOcean](https://www.youtube.com/watch?v=45PpBbqB2Z0)
+# [OvS manipulation with Go at DigitalOcean](https://www.youtube.com/watch?v=45PpBbqB2Z0) (Open vSwitch Conference 2017)
 
 How DigitalOcean controls Open vSwitch using the Go programming language.
 

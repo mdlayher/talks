@@ -2,7 +2,8 @@
     "VideoLink": "https://www.youtube.com/watch?v=45PpBbqB2Z0",
     "Time": "2017-11-17T11:00:00Z",
     "Description": "How DigitalOcean controls Open vSwitch using the Go programming language.",
-    "Title": "Open vSwitch 2017 Fall Conference: OvS manipulation with Go at DigitalOcean",
+    "Title": "OvS manipulation with Go at DigitalOcean",
+    "Venue": "Open vSwitch Conference 2017",
     "Resources": [
         {
             "Kind": "slides",

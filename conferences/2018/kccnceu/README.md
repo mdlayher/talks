@@ -1,4 +1,4 @@
-# [KubeCon/Cloud Native Con EU 2018: How to export Prometheus metrics from just about anything](https://www.youtube.com/watch?v=Zk09Mbu0YQk)
+# [How to export Prometheus metrics from just about anything](https://www.youtube.com/watch?v=Zk09Mbu0YQk) (KubeCon/Cloud Native Con EU 2018)
 
 Gathering and exporting Prometheus metrics with Go from files, devices, and system calls.
 

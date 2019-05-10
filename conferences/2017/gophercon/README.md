@@ -1,4 +1,4 @@
-# [GopherCon 2017 - Lightning Talk: Ethernet and Go](https://www.youtube.com/watch?v=DgNiktCFuBg)
+# [Ethernet and Go](https://www.youtube.com/watch?v=DgNiktCFuBg) (GopherCon 2017, lightning talk)
 
 A lightning talk about using Ethernet frames and raw sockets directly in Go.
 

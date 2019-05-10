@@ -2,7 +2,8 @@
     "VideoLink": "https://www.youtube.com/watch?v=pUaFW98V1Sc",
     "Time": "2018-08-29T11:00:00Z",
     "Description": "Implementing the IPv6 Neighbor Discovery Protocol in Go.",
-    "Title": "GopherCon 2018: Implementing a Network Protocol in Go",
+    "Title": "Implementing a Network Protocol in Go",
+    "Venue": "GopherCon 2018",
     "Resources": [
         {
             "Kind": "blog",

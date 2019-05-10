@@ -102,14 +102,7 @@ func main() {
 		}
 		defer readme.Close()
 
-		input := input{
-			Title:         p.Title,
-			Description:   p.Description,
-			VideoLink:     p.VideoLink,
-			ResourcesList: markdownList(p.Resources),
-		}
-
-		if err := directory.Execute(readme, input); err != nil {
+		if err := directory.Execute(readme, buildInput(p)); err != nil {
 			log.Fatalf("failed to execute directory template: %v", err)
 		}
 
@@ -136,12 +129,7 @@ func main() {
 	// markdown template.
 	inputs := make([]input, 0, len(ps))
 	for _, p := range ps {
-		inputs = append(inputs, input{
-			Title:         p.Title,
-			Description:   p.Description,
-			VideoLink:     p.VideoLink,
-			ResourcesList: markdownList(p.Resources),
-		})
+		inputs = append(inputs, buildInput(p))
 	}
 
 	if err := index.Execute(readme, inputs); err != nil {
@@ -208,6 +196,7 @@ func parsePresentation(path string, base *url.URL) (*presentation, error) {
 // A presentation is a presentation's metadata.
 type presentation struct {
 	Title       string
+	Venue       string
 	Description string
 	Time        time.Time
 	VideoLink   string
@@ -235,19 +224,27 @@ const (
 // An input is an input for the README templates.
 type input struct {
 	Title         string
+	Venue         string
 	Description   string
 	VideoLink     string
 	ResourcesList string
 }
 
-// markdownList generates a markdown-formatted string of resource links.
-func markdownList(resources []resource) string {
-	ss := make([]string, 0, len(resources))
-	for _, r := range resources {
+// buildInput turns a presentation into template input.
+func buildInput(p *presentation) input {
+	// Generate a markdown-formatted string of resource links.
+	ss := make([]string, 0, len(p.Resources))
+	for _, r := range p.Resources {
 		ss = append(ss, fmt.Sprintf("[%s](%s)", r.Kind, r.Link))
 	}
 
-	return strings.Join(ss, ", ")
+	return input{
+		Title:         p.Title,
+		Venue:         p.Venue,
+		Description:   p.Description,
+		VideoLink:     p.VideoLink,
+		ResourcesList: strings.Join(ss, ", "),
+	}
 }
 
 func resolveLink(prefix, rel string) (string, error) {
@@ -272,14 +269,14 @@ Talks by Matt Layher. MIT Licensed.
 
 ## Talks
 {{range .}}
-- {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Description}}
+- {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Venue}} ({{.Venue}}){{end}}{{if .Description}}
   - {{.Description}}{{end}}{{if .ResourcesList}}
   - {{.ResourcesList}}{{end}}{{end}}
 `)))
 
 // directory is the markdown template for individual directory README.md files.
 var directory = template.Must(template.New("directory.md").Parse(strings.TrimSpace(`
-# {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}
+# {{if .VideoLink}}[{{.Title}}]({{.VideoLink}}){{else}}{{.Title}}{{end}}{{if .Venue}} ({{.Venue}}){{end}}
 
 {{.Description}}
 {{if .ResourcesList}}

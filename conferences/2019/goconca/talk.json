@@ -2,7 +2,8 @@
     "VideoLink": "",
     "Time": "2019-05-31T11:00:00Z",
     "Description": "Using Go's unsafe.Pointer type to cast raw memory and work with system calls.",
-    "Title": "GoCon Canada 2019: Using unsafe.Pointer to explore Linux system calls",
+    "Title": "Using unsafe.Pointer to explore Linux system calls",
+    "Venue": "GoCon Canada 2019",
     "Resources": [
         {
             "Kind": "blog",

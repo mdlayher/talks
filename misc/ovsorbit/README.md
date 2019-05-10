@@ -1,4 +1,4 @@
-# OVS Orbit podcast: Networking with OVS at DigitalOcean
+# Networking with OVS at DigitalOcean (OVS Orbit podcast)
 
 Matt Layher and Armando Migliaccio discuss Open vSwitch networking at DigitalOcean.
 

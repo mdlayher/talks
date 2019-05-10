@@ -1,7 +1,8 @@
 {
     "Time": "2018-08-18T11:00:00Z",
     "Description": "Matt Layher and Armando Migliaccio discuss Open vSwitch networking at DigitalOcean.",
-    "Title": "OVS Orbit podcast: Networking with OVS at DigitalOcean",
+    "Title": "Networking with OVS at DigitalOcean",
+    "Venue": "OVS Orbit podcast",
     "Resources": [
         {
             "Kind": "audio",

@@ -1,4 +1,4 @@
-# [GoTO, April 2019: Ethernet and Go](https://www.youtube.com/watch?v=PaAkgkysFvs)
+# [Ethernet and Go](https://www.youtube.com/watch?v=PaAkgkysFvs) (GoTO, April 2019)
 
 An updated presentation and demo of using Ethernet frames and sockets directly in Go.
 

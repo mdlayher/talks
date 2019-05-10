@@ -2,7 +2,8 @@
     "VideoLink": "https://www.youtube.com/watch?v=_Mco3qgr4_I",
     "Time": "2019-03-27T11:00:00Z",
     "Description": "An overview of IPv6, and a demonstration of how to set up IPv4/6 dual-stack networks at home.",
-    "Title": "Orchestructure, March 2019: Exploring IPv6 at Home: Preparing for the Future of the Internet Protocol",
+    "Title": "Exploring IPv6 at Home: Preparing for the Future of the Internet Protocol",
+    "Venue": "Orchestructure, March 2019",
     "Resources": [
         {
             "Kind": "slides",
