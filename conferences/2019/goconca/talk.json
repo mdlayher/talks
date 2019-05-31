@@ -8,6 +8,10 @@
         {
             "Kind": "blog",
             "Link": "https://mdlayher.com/blog/unsafe-pointer-and-system-calls/"
+        },
+        {
+            "Kind": "slides",
+            "Link": "conferences/2019/goconca/using-unsafe-pointer-to-explore-linux-system-calls.pdf"
         }
     ]
 }

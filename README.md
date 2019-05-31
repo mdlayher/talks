@@ -6,7 +6,7 @@ Talks by Matt Layher. MIT Licensed.
 
 - Using unsafe.Pointer to explore Linux system calls (GoCon Canada 2019)
   - Using Go&#39;s unsafe.Pointer type to cast raw memory and work with system calls.
-  - [blog](https://mdlayher.com/blog/unsafe-pointer-and-system-calls/)
+  - [blog](https://mdlayher.com/blog/unsafe-pointer-and-system-calls/), [slides](https://github.com/mdlayher/talks/blob/master/conferences/2019/goconca/using-unsafe-pointer-to-explore-linux-system-calls.pdf)
 - [Ethernet and Go](https://www.youtube.com/watch?v=PaAkgkysFvs) (GoTO, April 2019)
   - An updated presentation and demo of using Ethernet frames and sockets directly in Go.
   - [blog](https://mdlayher.com/blog/network-protocol-breakdown-ethernet-and-go/), [slides](https://talks.godoc.org/github.com/mdlayher/talks/meetups/2019/04-goto/ethernet-and-go.slide#1)

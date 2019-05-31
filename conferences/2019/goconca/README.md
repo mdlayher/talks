@@ -2,4 +2,4 @@
 
 Using Go&#39;s unsafe.Pointer type to cast raw memory and work with system calls.
 
-- [blog](https://mdlayher.com/blog/unsafe-pointer-and-system-calls/)
+- [blog](https://mdlayher.com/blog/unsafe-pointer-and-system-calls/), [slides](https://github.com/mdlayher/talks/blob/master/conferences/2019/goconca/using-unsafe-pointer-to-explore-linux-system-calls.pdf)
