@@ -1,5 +1,5 @@
 {
-    "VideoLink": "",
+    "VideoLink": "https://www.youtube.com/watch?v=SY-TTmdSrXs",
     "Time": "2019-05-31T11:00:00Z",
     "Description": "Using Go's unsafe.Pointer type to cast raw memory and work with system calls.",
     "Title": "Using unsafe.Pointer to explore Linux system calls",
