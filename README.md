@@ -5,7 +5,7 @@ Talks by Matt Layher. MIT Licensed.
 ## Talks
 
 - Building a net.Conn type from the ground up (GopherCon UK 2019)
-  - Leveraging the runtime network poller to create custom net.Conn and net.Listener implementations.
+  - Leveraging Go&#39;s runtime network poller to create custom net.Conn and net.Listener implementations.
   - [slides](https://github.com/mdlayher/talks/blob/master/conferences/2019/gopherconuk/building-a-net-conn-type-from-the-ground-up.pdf)
 - [Using unsafe.Pointer to explore Linux system calls](https://www.youtube.com/watch?v=SY-TTmdSrXs) (GoCon Canada 2019)
   - Using Go&#39;s unsafe.Pointer type to cast raw memory and work with system calls.
