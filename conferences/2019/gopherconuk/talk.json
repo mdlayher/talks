@@ -1,5 +1,5 @@
 {
-    "VideoLink": "",
+    "VideoLink": "https://www.youtube.com/watch?v=H7b8GGJxpMk",
     "Time": "2019-08-23T11:00:00Z",
     "Description": "Leveraging Go's runtime network poller to create custom net.Conn and net.Listener implementations.",
     "Title": "Building a net.Conn type from the ground up",
