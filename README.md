@@ -4,6 +4,9 @@ Talks by Matt Layher. MIT Licensed.
 
 ## Talks
 
+- Monitoring, the Prometheus Way (with Ganesh Vernekar) (KubeCon/Cloud Native Con NA 2019)
+  - An introduction to the Prometheus metrics and monitoring system.
+  - [slides](https://github.com/mdlayher/talks/blob/master/conferences/2019/kccncna/monitoring-the-prometheus-way.pdf)
 - [Building a net.Conn type from the ground up](https://www.youtube.com/watch?v=H7b8GGJxpMk) (GopherCon UK 2019)
   - Leveraging Go&#39;s runtime network poller to create custom net.Conn and net.Listener implementations.
   - [slides](https://github.com/mdlayher/talks/blob/master/conferences/2019/gopherconuk/building-a-net-conn-type-from-the-ground-up.pdf)

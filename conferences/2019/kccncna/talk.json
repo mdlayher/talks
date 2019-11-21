@@ -1,0 +1,13 @@
+{
+    "VideoLink": "",
+    "Time": "2019-11-20T11:00:00Z",
+    "Description": "An introduction to the Prometheus metrics and monitoring system.",
+    "Title": "Monitoring, the Prometheus Way (with Ganesh Vernekar)",
+    "Venue": "KubeCon/Cloud Native Con NA 2019",
+    "Resources": [
+        {
+            "Kind": "slides",
+            "Link": "conferences/2019/kccncna/monitoring-the-prometheus-way.pdf"
+        }
+    ]
+}
