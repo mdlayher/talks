@@ -1,4 +1,4 @@
-# Monitoring, the Prometheus Way (with Ganesh Vernekar) (KubeCon/Cloud Native Con NA 2019)
+# [Monitoring, the Prometheus Way (with Ganesh Vernekar)](https://www.youtube.com/watch?v=mC6Zt5Ga9UQ) (KubeCon/Cloud Native Con NA 2019)
 
 An introduction to the Prometheus metrics and monitoring system.
 
