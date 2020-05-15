@@ -1,0 +1,180 @@
+schedgroup: a timer-based goroutine concurrency primitive
+30 Jun 2020
+
+Matt Layher
+Distributed Systems Engineer, Fastly
+mdlayher@gmail.com
+https://github.com/mdlayher
+https://mdlayher.com
+@mdlayher
+
+* Disclaimer
+
+I work for Fastly, but this work is not related to Fastly in any way.
+
+* Matt Layher
+
+@mdlayher, mdlayher.com, github.com/mdlayher/talks
+
+.image colorado-square.jpg 500 _
+
+* Introducing schedgroup
+
+A package that allows scheduling or delaying a goroutine to run at or after a
+specific point in time.
+
+.play basic/main.go /START OMIT/,/END OMIT/
+
+.link github.com/mdlayher/schedgroup
+
+* Why?
+
+Typically you want your code to run immediately and as fast as possible.
+
+- Throttling or delaying an aggressive client's requests
+
+- Sometimes you don't make the rules!
+
+* Introducing CoreRAD
+
+CoreRAD is an extensible and observable IPv6 Neighbor Discovery Protocol (NDP) 
+router advertisement daemon.
+
+.link github.com/mdlayher/corerad
+
+- Allows IPv6 clients to find routers and establish a default route
+- Enables IPv6 Stateless Address Autoconfiguration (SLAAC)
+
+CoreRAD uses NDP (RFC 4861) to perform these functions:
+
+.link https://tools.ietf.org/html/rfc4861
+
+Learn more about IPv6 and NDP:
+
+.link https://mdlayher.com/talks
+
+* NDP rules
+
+RFC 4861 mandates that IPv6 routers rate limit both solicited and unsolicited
+router advertisements.
+
+When multicasting to the IPv6 link-local all nodes address:
+
+    ... consecutive Router Advertisements sent to the all-nodes multicast address MUST be rate
+    limited to no more than one advertisement every MIN_DELAY_BETWEEN_RAS seconds.
+
+And even when unicasting a response to individual router solicitations:
+
+    In all cases, Router Advertisements sent in response to a Router Solicitation MUST be
+    delayed by a random time between 0 and MAX_RA_DELAY_TIME seconds.
+
+* time.AfterFunc: using the standard library
+
+`time.AfterFunc` does exactly what we need! Problem solved?
+
+.play naive/main.go /START OMIT/,/END OMIT/
+
+* Cancelation support: the naive prototype
+
+Can we add context cancelation?
+
+.play naivecontext/main.go /START OMIT/,/END OMIT/
+
+* Cancelation support: the naive prototype
+
+We can use pprof to examine our program with a nice web UI:
+
+    $ go tool pprof -http :8080 localhost:8081/debug/pprof/goroutine
+
+* Cancelation support: the naive prototype
+
+.image naivecontext/goroutines.png 550 _
+
+* Cancelation support: the naive prototype
+
+No library, the caller handles goroutines and timers.
+
+Pros:
+
+- Simplicity: very little code
+
+Cons:
+
+- Caller has to manage concurrency and cancelation
+- Unbounded number of goroutines, wasteful use of memory
+- Excessive number of runtime timers
+
+* Efficiency vs. convenience
+
+Can we write efficient and tidy code which also supports cancelation?
+
+- `time.AfterFunc` is well-optimized, but inflexible
+- Spinning up a goroutine to wait for a timer or cancelation is wasteful
+
+* schedgroup: worker pool
+
+A library with a fixed number of worker goroutines consuming work from a channel.
+
+Goals:
+
+- Bounded number of goroutines
+- Support for context cancelation
+
+* schedgroup: worker pool
+
+A Group coordinates concurrent workers to expose a concise public API.
+
+.code workerpool/schedgroup/group.go /START 1 OMIT/,/END 1 OMIT/
+
+* schedgroup: worker pool
+
+Tasks are created by Delay, and the caller can block until completion by calling Wait.
+
+.code workerpool/schedgroup/group.go /START 2 OMIT/,/END 2 OMIT/
+
+* schedgroup: worker pool
+
+Internal worker goroutines consume tasks and execute them when a delay elapses.
+
+.code workerpool/schedgroup/group.go /START 3 OMIT/,/END 3 OMIT/
+
+* schedgroup: worker pool
+
+Appears and behaves identically to the completed version earlier in the slides.
+
+.play workerpool/main.go /START OMIT/,/END OMIT/
+
+* schedgroup: worker pool
+
+.image workerpool/goroutines.png 550 _
+
+
+* schedgroup: worker pool
+
+A library with a fixed number of worker goroutines consuming work from a channel.
+
+Pros:
+
+- Concurrency and cancelation are managed internally
+- Bounded number of goroutines
+- Reasonably concise code thanks to Go's concurrency primitives
+
+Cons:
+
+- Idle worker goroutines consume system resources
+- An overwhelming amount of tasks could result in blocking the caller
+
+* schedgroup: timer-polling using a monitor goroutine
+
+A library which polls continuously to check for timer expiration.
+
+Goals:
+
+- Don't spin up goroutines until tasks are ready
+- Support for context cancelation
+
+* schedgroup: timer-polling using a monitor goroutine
+
+A Group coordinates concurrent workers to expose a concise public API.
+
+.code timerpolling/schedgroup/group.go /START 1 OMIT/,/END 1 OMIT/

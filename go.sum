@@ -3,6 +3,8 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
+github.com/google/go-cmp v0.3.1 h1:Xye71clBPdm5HgqGwUkwhbynsUJZhDbS20FvLhQ2izg=
+github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx/RkqARlsWZ6pIwiU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/mdlayher/ethernet v0.0.0-20190313224307-5b5fc417d966 h1:O3p5UmisBhl3V6lgs4Vdfg8HpjzbWJPyOfGLdwVJSmI=
@@ -10,6 +12,8 @@ github.com/mdlayher/ethernet v0.0.0-20190313224307-5b5fc417d966/go.mod h1:5s5p/s
 github.com/mdlayher/raw v0.0.0-20190313224157-43dbcdd7739d/go.mod h1:r1fbeITl2xL/zLbVnNHFyOzQJTgr/3fpf1lJX/cjzR8=
 github.com/mdlayher/raw v0.0.0-20190329140802-b0647ab7d8b3 h1:RuWlSPko24MJpXCcZT6pmgYqLnhTjuMlIWsMTHL3Y9M=
 github.com/mdlayher/raw v0.0.0-20190329140802-b0647ab7d8b3/go.mod h1:r1fbeITl2xL/zLbVnNHFyOzQJTgr/3fpf1lJX/cjzR8=
+github.com/mdlayher/schedgroup v0.0.0-20200506182200-45678742bdc7 h1:WsbRp8nLEDfgw9g1T2aDo0IrA3dlSI48kK75qayT9IA=
+github.com/mdlayher/schedgroup v0.0.0-20200506182200-45678742bdc7/go.mod h1:5NGn8lFa8HhigBCL4QIkR5YuAgaeolDZxE57JP/UVys=
 github.com/prometheus/client_golang v0.9.2 h1:awm861/B8OKDd2I/6o1dy3ra4BamzKhYOiGItCeZ740=
 github.com/prometheus/client_golang v0.9.2/go.mod h1:OsXs2jCmiKlQ1lTBmv21f2mNfw4xf/QclQDMrYNZzcM=
 github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910 h1:idejC8f05m9MGOsuEi1ATq9shN03HrxNkD/luQvxCv8=
@@ -23,6 +27,7 @@ golang.org/x/net v0.0.0-20181201002055-351d144fa1fc/go.mod h1:mL1N/T3taQHkDXs73r
 golang.org/x/net v0.0.0-20190311183353-d8887717615a/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
 golang.org/x/net v0.0.0-20190313220215-9f648a60d977 h1:actzWV6iWn3GLqN8dZjzsB+CLt+gaV2+wsxroxiQI8I=
 golang.org/x/net v0.0.0-20190313220215-9f648a60d977/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
+golang.org/x/sync v0.0.0-20181108010431-42b317875d0f h1:Bl/8QSvNqXvPGPGXa2z5xUTmV7VDcZyvRZ+QQXkXTZQ=
 golang.org/x/sync v0.0.0-20181108010431-42b317875d0f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a h1:1BGLXjeY4akVXGgbC9HugT3Jv3hCI0z56oJR5vAMgBU=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
