@@ -140,14 +140,13 @@ Internal worker goroutines consume tasks and execute them when a delay elapses.
 
 * schedgroup: worker pool
 
-Appears and behaves identically to the completed version earlier in the slides.
+Demo appears and behaves identically to the completed version earlier in the slides.
 
 .play workerpool/main.go /START OMIT/,/END OMIT/
 
 * schedgroup: worker pool
 
 .image workerpool/goroutines.png 550 _
-
 
 * schedgroup: worker pool
 
@@ -172,9 +171,69 @@ Goals:
 
 - Don't spin up goroutines until tasks are ready
 - Support for context cancelation
+- Efficient scheduling of tasks which are ready
+
+* Introducing container/heap
+
+A min-heap will allow us to quickly determine which tasks should be scheduled first.
+
+    // A type, typically a collection, that satisfies sort.Interface can be sorted
+    // by the routines in container/heap.
+    type Interface interface {
+        // sort.Interface
+        Len() int
+        Less(i, j int) bool
+        Swap(i, j int)
+
+        Push(x interface{}) // add x as element Len()
+        Pop() interface{}   // remove and return element Len() - 1.
+    }
+
+Let's implement 'heap.Interface' for a slice of tasks.
+
+* Implementing heap.Interface
+
+.code timerpolling/schedgroup/group.go /START TASK OMIT/,/END TASK OMIT/
+
+* container/heap usage
+
+container/heap functions maintain the min-heap's structure.
+
+.play timerpolling/heap.go /START HEAP OMIT/,/END HEAP OMIT/
 
 * schedgroup: timer-polling using a monitor goroutine
 
 A Group coordinates concurrent workers to expose a concise public API.
 
-.code timerpolling/schedgroup/group.go /START 1 OMIT/,/END 1 OMIT/
+.code timerpolling/schedgroup/group.go /START GROUP OMIT/,/END GROUP OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+The Delay method makes a return, but is now a wrapper for the generalized Schedule.
+
+.code timerpolling/schedgroup/group.go /START DELAY OMIT/,/END DELAY OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+The monitor goroutine is responsible for ticking every millisecond to see if
+the tasks heap has any scheduled tasks ready.
+
+.code timerpolling/schedgroup/group.go /START MONITOR OMIT/,/END MONITOR OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+The trigger method will see if any work is ready to be invoked as of time 'now'.
+
+.code timerpolling/schedgroup/group.go /START TRIGGER OMIT/,/END TRIGGER OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+Wait blocks until work is done or the Group's context is canceled.
+
+.code timerpolling/schedgroup/group.go /START WAIT OMIT/,/END WAIT OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+Demo appears and behaves identically to both previous versions.
+
+.play timerpolling/main.go /START OMIT/,/END OMIT/

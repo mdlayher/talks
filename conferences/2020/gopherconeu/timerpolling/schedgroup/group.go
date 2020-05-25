@@ -1,80 +1,158 @@
 package schedgroup
 
 import (
+	"container/heap"
 	"context"
 	"sync"
 	"time"
 )
 
-// START 1 OMIT
+// START GROUP OMIT
 
-// A Group is a goroutine worker pool which delays tasks for a specified time.
+// A Group is a goroutine worker pool which schedules tasks to be performed
+// after a specified time. A Group must be created with the New constructor.
 type Group struct {
-	taskC chan task
-	wg    sync.WaitGroup
+	ctx    context.Context
+	cancel func()
+	mu     sync.Mutex
+	tasks  tasks
 }
 
 // New creates a new Group which will use ctx for cancelation.
 func New(ctx context.Context) *Group {
-	// Spin up n worker goroutines to consume tasks off of taskC.
-	const n = 32
-	g := &Group{taskC: make(chan task, n)}
+	// Monitor goroutine context and cancelation.
+	mctx, cancel := context.WithCancel(ctx)
 
-	for i := 0; i < n; i++ {
-		go g.worker(ctx)
+	g := &Group{
+		ctx:    ctx,
+		cancel: cancel,
 	}
+	go g.monitor(mctx)
 
 	return g
 }
 
-// END 1 OMIT
-// START 2 OMIT
+// END GROUP OMIT
 
-// Wait waits for the completion of all scheduled tasks.
-func (g *Group) Wait() error {
-	g.wg.Wait()
-	return nil
+// START DELAY OMIT
+
+// Delay schedules a function to run at or after the specified delay. Delay
+// is a convenience wrapper for Schedule which adds delay to the current time.
+func (g *Group) Delay(delay time.Duration, fn func()) {
+	g.Schedule(time.Now().Add(delay), fn)
 }
 
-// Delay schedules a function to run at or after the specified delay.
-func (g *Group) Delay(delay time.Duration, fn func()) {
-	g.wg.Add(1)
-	g.taskC <- task{
-		Delay: delay,
-		Call:  fn,
+// Schedule schedules a function to run at or after the specified time.
+func (g *Group) Schedule(when time.Time, fn func()) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+
+	heap.Push(&g.tasks, task{
+		Deadline: when,
+		Call:     fn,
+	})
+}
+
+// END DELAY OMIT
+
+// START WAIT OMIT
+
+// Wait waits for the completion of all scheduled tasks, or for context cancelation.
+func (g *Group) Wait() error {
+	t := time.NewTicker(1 * time.Millisecond)
+	for {
+		select {
+		case <-g.ctx.Done():
+			// Caller asked for cancelation.
+			return g.ctx.Err()
+		case <-t.C:
+		}
+		g.mu.Lock()
+		if len(g.tasks) == 0 {
+			// No more tasks left, cancel the monitor goroutine.
+			defer g.mu.Unlock()
+			g.cancel()
+			t.Stop()
+			return nil
+		}
+		g.mu.Unlock()
 	}
 }
 
-// A task is a function which is called after the specified delay.
-type task struct {
-	Delay time.Duration
-	Call  func()
-}
+// END WAIT OMIT
 
-// END 2 OMIT
-// START 3 OMIT
+// START MONITOR OMIT
 
-// worker runs a loop which will consume tasks until ctx is canceled.
-func (g *Group) worker(ctx context.Context) {
+// monitor triggers tasks at the interval specified by g.Interval until ctx
+// is canceled.
+func (g *Group) monitor(ctx context.Context) error {
+	t := time.NewTicker(1 * time.Millisecond)
+	defer t.Stop()
+
 	for {
 		select {
 		case <-ctx.Done():
-			return
-		case t := <-g.taskC:
-			g.work(ctx, t)
+			// monitor's cancelation is expected and should not result in an
+			// error being returned to the caller.
+			return nil
+		case now := <-t.C:
+			g.trigger(now)
 		}
 	}
 }
 
-// work executes a task after a delay or returns if ctx is canceled.
-func (g *Group) work(ctx context.Context, t task) {
-	defer g.wg.Done()
+// END MONITOR OMIT
 
-	select {
-	case <-ctx.Done():
-	case <-time.After(t.Delay):
-		t.Call()
+// START TRIGGER OMIT
+
+// trigger checks for scheduled tasks and runs them if they are scheduled
+// on or after the time specified by now.
+func (g *Group) trigger(now time.Time) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+
+	for g.tasks.Len() > 0 {
+		// Check the first task's readiness, but don't pop it off the heap
+		// just in case it isn't ready.
+		next := &g.tasks[0]
+		if next.Deadline.After(now) {
+			// Earliest scheduled task is not ready.
+			return
+		}
+
+		// This task is ready, pop it from the heap and run it.
+		t := heap.Pop(&g.tasks).(task)
+		go t.Call()
 	}
 }
 
-// END 3 OMIT
+// END TRIGGER OMIT
+
+// START TASK OMIT
+
+// A task is a function which is called after the specified deadline.
+type task struct {
+	Deadline time.Time
+	Call     func()
+}
+
+// tasks implements heap.Interface.
+type tasks []task
+
+var _ heap.Interface = &tasks{}
+
+func (pq tasks) Len() int { return len(pq) }
+
+func (pq tasks) Less(i, j int) bool { return pq[i].Deadline.Before(pq[j].Deadline) }
+
+func (pq tasks) Swap(i, j int) { pq[i], pq[j] = pq[j], pq[i] }
+
+func (pq *tasks) Push(x interface{}) { *pq = append(*pq, x.(task)) }
+
+func (pq *tasks) Pop() (item interface{}) {
+	n := len(*pq)
+	item, *pq = (*pq)[n-1], (*pq)[:n-1]
+	return item
+}
+
+// END TASK OMIT
