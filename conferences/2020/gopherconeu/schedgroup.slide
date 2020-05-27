@@ -25,7 +25,7 @@ specific point in time.
 
 .play basic/main.go /START OMIT/,/END OMIT/
 
-.link github.com/mdlayher/schedgroup
+.link https://github.com/mdlayher/schedgroup
 
 * Why?
 
@@ -40,7 +40,7 @@ Typically you want your code to run immediately and as fast as possible.
 CoreRAD is an extensible and observable IPv6 Neighbor Discovery Protocol (NDP) 
 router advertisement daemon.
 
-.link github.com/mdlayher/corerad
+.link https://github.com/mdlayher/corerad
 
 - Allows IPv6 clients to find routers and establish a default route
 - Enables IPv6 Stateless Address Autoconfiguration (SLAAC)
@@ -237,3 +237,55 @@ Wait blocks until work is done or the Group's context is canceled.
 Demo appears and behaves identically to both previous versions.
 
 .play timerpolling/main.go /START OMIT/,/END OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+I deployed this code and noticed a significant CPU usage increase.
+
+What's happening? Let's try out 'go tool trace'.
+
+    $ curl http://localhost:8081/debug/pprof/trace > trace.out
+    $ go tool trace trace.out
+
+Note the subtle red/pink banding in the PROCS section.
+
+.image timerpolling/trace.png 250 _
+
+* schedgroup: timer-polling using a monitor goroutine
+
+Focusing on a 100ms slice shows the problem more clearly:
+
+- Polling the tasks heap every 1ms resulting in excessive CPU usage
+- Ideally we want sustained CPU usage or no CPU usage; this is just inefficient!
+
+.image timerpolling/tracezoom.png 250 _
+
+* schedgroup: timer-polling using a monitor goroutine
+
+A library which polls continuously to check for timer expiration.
+
+Pros:
+
+- Concurrency and cancelation are managed internally
+- Bounded number of goroutines
+
+Cons:
+
+- Extremely inefficient use of CPU due to wasteful timer polling
+- Both Group.monitor and Group.Wait must poll to wait for completion
+
+* schedgroup: event-driven scheduler with signaling channels
+
+A library which uses goroutines, channels, and select to efficiently signal
+when work is ready.
+
+Goals:
+
+- Don't spin up goroutines until tasks are ready
+- Support for context cancelation
+- Efficient scheduling of tasks which are ready
+- No polling of timers to avoid excessive CPU usage
+
+This is the final result of my experiments:
+
+.link https://github.com/mdlayher/schedgroup
