@@ -289,3 +289,64 @@ Goals:
 This is the final result of my experiments:
 
 .link https://github.com/mdlayher/schedgroup
+
+* schedgroup: event-driven scheduler with signaling channels
+
+Some parts of the previous design are retained:
+
+- Min-heap of tasks ordered by their scheduled time
+- Monitor goroutine to schedule tasks when they are ready to run
+
+* schedgroup: timer-polling using a monitor goroutine
+
+A Group coordinates concurrent workers to expose a concise public API.
+
+.code final/schedgroup/group.go /START GROUP OMIT/,/END GROUP OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+Delay and Schedule now signal that work has been added to the heap.
+
+.code final/schedgroup/group.go /START SCHEDULE OMIT/,/END SCHEDULE OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+This is a non-blocking send attempt on g.addC:
+
+- If a value can be sent on g.addC, the value is sent.
+- Otherwise, the default case is selected and nothing happens.
+
+    // Notify monitor that a new task has been pushed on to the heap.
+    select {
+    case g.addC <- struct{}{}:
+        // empty struct is sent
+    default:
+        // nothing happens
+    }
+
+Why an empty struct? Some prefer using a bool.
+
+I prefer the empty struct because it indicates that the value sent is truly
+meaningless and cannot be interpreted in any way.
+
+* schedgroup: timer-polling using a monitor goroutine
+
+The monitor goroutine runs a single timer which waits until the earliest
+scheduled event is ready to fire.
+
+.code final/schedgroup/group.go /START MONITOR1 OMIT/,/END MONITOR1 OMIT/
+
+* schedgroup: timer-polling using a monitor goroutine
+
+Once tasks are scheduled, we wait until a new event occurs.
+
+.code final/schedgroup/group.go /START MONITOR2 OMIT/,/END MONITOR2 OMIT/
+
+If tickC is nil because there are no more tasks waiting to be scheduled, that
+select case can be "shut off".
+
+* schedgroup: event-driven scheduler with signaling channels
+
+Demo appears and behaves identically to all previous versions.
+
+.play final/main.go /START OMIT/,/END OMIT/
