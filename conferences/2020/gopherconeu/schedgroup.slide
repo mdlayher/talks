@@ -1,5 +1,5 @@
 schedgroup: a timer-based goroutine concurrency primitive
-30 Jun 2020
+16 Jun 2020
 
 Matt Layher
 Distributed Systems Engineer, Fastly
@@ -297,19 +297,19 @@ Some parts of the previous design are retained:
 - Min-heap of tasks ordered by their scheduled time
 - Monitor goroutine to schedule tasks when they are ready to run
 
-* schedgroup: timer-polling using a monitor goroutine
+* schedgroup: event-driven scheduler with signaling channels
 
 A Group coordinates concurrent workers to expose a concise public API.
 
 .code final/schedgroup/group.go /START GROUP OMIT/,/END GROUP OMIT/
 
-* schedgroup: timer-polling using a monitor goroutine
+* schedgroup: event-driven scheduler with signaling channels
 
 Delay and Schedule now signal that work has been added to the heap.
 
 .code final/schedgroup/group.go /START SCHEDULE OMIT/,/END SCHEDULE OMIT/
 
-* schedgroup: timer-polling using a monitor goroutine
+* schedgroup: event-driven scheduler with signaling channels
 
 This is a non-blocking send attempt on g.addC:
 
@@ -329,14 +329,14 @@ Why an empty struct? Some prefer using a bool.
 I prefer the empty struct because it indicates that the value sent is truly
 meaningless and cannot be interpreted in any way.
 
-* schedgroup: timer-polling using a monitor goroutine
+* schedgroup: event-driven scheduler with signaling channels
 
 The monitor goroutine runs a single timer which waits until the earliest
 scheduled event is ready to fire.
 
 .code final/schedgroup/group.go /START MONITOR1 OMIT/,/END MONITOR1 OMIT/
 
-* schedgroup: timer-polling using a monitor goroutine
+* schedgroup: event-driven scheduler with signaling channels
 
 Once tasks are scheduled, we wait until a new event occurs.
 
@@ -350,3 +350,95 @@ select case can be "shut off".
 Demo appears and behaves identically to all previous versions.
 
 .play final/main.go /START OMIT/,/END OMIT/
+
+
+* schedgroup: event-driven scheduler with signaling channels
+
+Pros:
+
+- Concurrency and cancelation are managed internally
+- Single timer heap management goroutine
+- Goroutines are spun up on-demand exactly when needed
+- No polling!
+
+Cons:
+
+- Internal complexity: it took me a while to work out bugs
+- Potential for deadlocks due to subtle concurrency bugs
+
+* schedgroup: naive prototype vs. event-driven scheduler
+
+Let's do a head-to-head comparison of our naive prototype vs. the final implementation.
+
+We will examine:
+
+- number of running goroutines
+- in-use heap space
+
+* schedgroup: naive prototype vs. event-driven scheduler
+
+Increment a counter to 1 million after ~10 seconds per task.
+
+.code final/finalpprof/main.go /START OMIT/,/END OMIT/
+
+* schedgroup goroutines: naive prototype
+
+.image naivecontext/goroutines.png 550 _
+
+* schedgroup goroutines: event-driven scheduler
+
+Massive reduction in number of goroutines: ~1,000,000 to 3
+
+.image final/goroutines.png 450 _
+
+* schedgroup heap in-use space: naive prototype
+
+    total:          219.74MB
+    
+    runtime.mstart: 148.10MB
+    time.After:      38.64MB
+    other:           33.00MB
+
+.image naivecontext/heapinuse.png 150 _
+
+* schedgroup heap in-use space: event-driven scheduler
+
+Roughly 6x reduction in in-use heap bytes: 219.74MB to 36.50MB
+
+    total:                     36.50MB
+
+    schedgroup.(*Group).Delay: 30.50MB
+    other:                      6.00MB
+
+.image final/heapinuse.png 180 _
+
+* Summary
+
+What did we learn?
+
+- Proper measurement is essential to prove or disprove a performance hypothesis
+- Focus on correctness and simplicity, then make iterative improvements
+- Go runtime timers are very efficient, especially as of Go 1.14
+
+.link https://golang.org/doc/go1.14#runtime
+
+* More information
+
+The final package is available on GitHub:
+
+.link https://github.com/mdlayher/schedgroup
+
+Special thanks to Egon Elbre for two initial prototypes which heavily influenced
+the final design of the package.
+
+.link https://twitter.com/egonelbre
+
+Go issue: runtime: make timers faster
+
+.link http://golang.org/issue/6239
+
+CoreRAD: an extensible and observable IPv6 NDP router advertisement daemon
+
+.link https://github.com/mdlayher/corerad
+
+.link https://mdlayher.com/blog/corerad-a-new-ipv6-router-advertisement-daemon/
