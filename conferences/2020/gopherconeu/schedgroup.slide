@@ -189,7 +189,7 @@ A min-heap will allow us to quickly determine which tasks should be scheduled fi
         Pop() interface{}   // remove and return element Len() - 1.
     }
 
-Let's implement 'heap.Interface' for a slice of tasks.
+Let's implement `heap.Interface` for a slice of tasks.
 
 * Implementing heap.Interface
 
@@ -197,7 +197,7 @@ Let's implement 'heap.Interface' for a slice of tasks.
 
 * container/heap usage
 
-container/heap functions maintain the min-heap's structure.
+`container/heap` functions maintain the min-heap's structure.
 
 .play timerpolling/heap.go /START HEAP OMIT/,/END HEAP OMIT/
 
@@ -222,7 +222,7 @@ the tasks heap has any scheduled tasks ready.
 
 * schedgroup: timer-polling using a monitor goroutine
 
-The trigger method will see if any work is ready to be invoked as of time 'now'.
+The trigger method will see if any work is ready to be invoked as of time `now`.
 
 .code timerpolling/schedgroup/group.go /START TRIGGER OMIT/,/END TRIGGER OMIT/
 
@@ -242,7 +242,7 @@ Demo appears and behaves identically to both previous versions.
 
 I deployed this code and noticed a significant CPU usage increase.
 
-What's happening? Let's try out 'go tool trace'.
+What's happening? Let's try out `go` `tool` `trace`.
 
     $ curl http://localhost:8081/debug/pprof/trace > trace.out
     $ go tool trace trace.out
@@ -387,7 +387,7 @@ Increment a counter to 1 million after ~10 seconds per task.
 
 * schedgroup goroutines: event-driven scheduler
 
-Massive reduction in number of goroutines: ~1,000,000 to 3
+Massive reduction in number of goroutines: ~1,000,000 to 3 (one is pprof!)
 
 .image final/goroutines.png 450 _
 
@@ -433,7 +433,7 @@ the final design of the package.
 
 .link https://twitter.com/egonelbre
 
-Go issue: runtime: make timers faster
+Go issue: "runtime: make timers faster"
 
 .link http://golang.org/issue/6239
 

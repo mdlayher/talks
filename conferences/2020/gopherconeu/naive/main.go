@@ -17,7 +17,7 @@ func main() {
 	for i := 0; i < num; i++ {
 		// 0ms, 500ms, 1000ms, etc.
 		n := i + 1
-		time.AfterFunc(500*time.Millisecond, func() {
+		time.AfterFunc(time.Duration(n)*500*time.Millisecond, func() {
 			defer wg.Done()
 			log.Println(n)
 		})
