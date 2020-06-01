@@ -4,6 +4,9 @@ Talks by Matt Layher. MIT Licensed.
 
 ## Talks
 
+- schedgroup: a timer-based goroutine concurrency primitive (GopherCon Europe 2020)
+  - Building and Go package which can schedule tasks to be performed at or after a specified time.
+  - [slides](https://talks.godoc.org/github.com/mdlayher/talks/conferences/2020/gopherconeu/schedgroup.slide)
 - [Monitoring, the Prometheus Way (with Ganesh Vernekar)](https://www.youtube.com/watch?v=mC6Zt5Ga9UQ) (KubeCon/Cloud Native Con NA 2019)
   - An introduction to the Prometheus metrics and monitoring system.
   - [slides](https://github.com/mdlayher/talks/blob/master/conferences/2019/kccncna/monitoring-the-prometheus-way.pdf)
