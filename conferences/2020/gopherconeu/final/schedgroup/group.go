@@ -82,13 +82,10 @@ func (g *Group) Schedule(when time.Time, fn func()) {
 
 // END SCHEDULE OMIT
 
+// START WAIT1 OMIT
+
 // Wait waits for the completion of all scheduled tasks, or for cancelation of
-// the context passed to New. Wait will only returns errors due to context
-// cancelation. If no context is associated the the Group, wait never returns
-// an error.
-//
-// Once Wait is called, any further calls to Delay or Schedule will panic. If
-// Wait is called more than once, Wait will panic.
+// the context passed to New.
 func (g *Group) Wait() error {
 	// Context cancelation takes priority.
 	if err := g.ctx.Err(); err != nil {
@@ -100,6 +97,8 @@ func (g *Group) Wait() error {
 	if g.tasks.Len() == 0 {
 		// Release the mutex immediately so that any running jobs are able to
 		// complete and send on g.lenC.
+		//
+		// Tip: Ctrl+\ sends SIGQUIT to dump stacks.
 		g.mu.Unlock()
 		g.cancel()
 		g.wg.Wait()
@@ -107,29 +106,31 @@ func (g *Group) Wait() error {
 	}
 	g.mu.Unlock()
 
-	// Wait on context cancelation or for the number of items in the heap
-	// to reach 0.
+	// END WAIT1 OMIT
+	// START WAIT2 OMIT
+
+	// Wait on context cancelation or for the number of items in the heap to reach 0.
 	var n int
 	for {
 		select {
 		case <-g.ctx.Done():
 			return g.ctx.Err()
 		case n = <-g.lenC:
-			// Context cancelation takes priority.
 			if err := g.ctx.Err(); err != nil {
 				return err
 			}
 		}
 
 		if n == 0 {
-			// No more tasks left, cancel the monitor goroutine and wait for
-			// all tasks to complete.
+			// No more tasks left, cancel the monitor goroutine and wait for tasks to complete.
 			g.cancel()
 			g.wg.Wait()
 			return nil
 		}
 	}
 }
+
+// END WAIT2 OMIT
 
 // START MONITOR1 OMIT
 
@@ -169,6 +170,7 @@ func (g *Group) monitor(ctx context.Context) {
 	}
 }
 
+// START TRIGGER1 OMIT
 // trigger checks for scheduled tasks and runs them if they are scheduled
 // on or after the time specified by now.
 func (g *Group) trigger(now time.Time) time.Time {
@@ -178,19 +180,21 @@ func (g *Group) trigger(now time.Time) time.Time {
 		// appropriate.
 		select {
 		case g.lenC <- g.tasks.Len():
-			break
 		default:
 			// Wait hasn't been called.
-			break
 		}
 
 		g.mu.Unlock()
 	}()
 
+	// END TRIGGER1 OMIT
+
+	// START TRIGGER2 OMIT
 	for g.tasks.Len() > 0 {
 		next := &g.tasks[0]
 		if next.Deadline.After(now) {
-			// Earliest scheduled task is not ready.
+			// Earliest scheduled task is not ready. We return its deadline
+			// so the monitor timer knows exactly when to wake up.
 			return next.Deadline
 		}
 
@@ -203,8 +207,11 @@ func (g *Group) trigger(now time.Time) time.Time {
 		}()
 	}
 
+	// No more tasks in the heap, stop the timer until one is added.
 	return time.Time{}
 }
+
+// END TRIGGER2 OMIT
 
 // A task is a function which is called after the specified deadline.
 type task struct {

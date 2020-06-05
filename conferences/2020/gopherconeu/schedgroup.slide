@@ -299,6 +299,10 @@ Some parts of the previous design are retained:
 
 * schedgroup: event-driven scheduler with signaling channels
 
+.image final/diagram.png 400 _
+
+* schedgroup: event-driven scheduler with signaling channels
+
 A Group coordinates concurrent workers to expose a concise public API.
 
 .code final/schedgroup/group.go /START GROUP OMIT/,/END GROUP OMIT/
@@ -347,10 +351,34 @@ select case can be "shut off".
 
 * schedgroup: event-driven scheduler with signaling channels
 
+When trigger returns, we want to notify any outstanding Wait calls if there are
+tasks left to be scheduled.
+
+.code final/schedgroup/group.go /START TRIGGER1 OMIT/,/END TRIGGER1 OMIT/
+
+* schedgroup: event-driven scheduler with signaling channels
+
+trigger will run any tasks with a deadline before or equal to now.
+
+.code final/schedgroup/group.go /START TRIGGER2 OMIT/,/END TRIGGER2 OMIT/
+
+* schedgroup: event-driven scheduler with signaling channels
+
+Wait is used to block and wait for outstanding tasks in a Group.
+
+.code final/schedgroup/group.go /START WAIT1 OMIT/,/END WAIT1 OMIT/
+
+* schedgroup: event-driven scheduler with signaling channels
+
+trigger sends the number of remaining tasks on g.lenC until none are left.
+
+.code final/schedgroup/group.go /START WAIT2 OMIT/,/END WAIT2 OMIT/
+
+* schedgroup: event-driven scheduler with signaling channels
+
 Demo appears and behaves identically to all previous versions.
 
 .play final/main.go /START OMIT/,/END OMIT/
-
 
 * schedgroup: event-driven scheduler with signaling channels
 
