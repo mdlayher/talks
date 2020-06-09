@@ -30,12 +30,6 @@ func New(ctx context.Context) *Group {
 // END 1 OMIT
 // START 2 OMIT
 
-// Wait waits for the completion of all scheduled tasks.
-func (g *Group) Wait() error {
-	g.wg.Wait()
-	return nil
-}
-
 // Delay schedules a function to run at or after the specified delay.
 func (g *Group) Delay(delay time.Duration, fn func()) {
 	g.wg.Add(1)
@@ -43,6 +37,12 @@ func (g *Group) Delay(delay time.Duration, fn func()) {
 		Delay: delay,
 		Call:  fn,
 	}
+}
+
+// Wait waits for the completion of all scheduled tasks.
+func (g *Group) Wait() error {
+	g.wg.Wait()
+	return nil
 }
 
 // A task is a function which is called after the specified delay.
