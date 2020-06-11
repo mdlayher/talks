@@ -711,12 +711,20 @@ Cons:
 
 * schedgroup: naive prototype vs. event-driven scheduler
 
-Let's do a head-to-head comparison of our naive prototype vs. the final implementation.
+Let's do a head-to-head comparison of our naive `time.AfterFunc` prototype vs. the
+final implementation.
 
 We will examine:
 
 - number of running goroutines
 - in-use heap space
+
+: Now that we've built out our final prototype, it's time for a head-to-head
+: comparison with our initial, naive prototype that uses time.AfterFunc.
+: ---
+: The CPU usage on both should be comparable due to goroutines sleeping and waiting
+: for timers to wake them up, so we'll specifically examine the number of running
+: goroutines, and the in-use heap space.
 
 * schedgroup: naive prototype vs. event-driven scheduler
 
@@ -724,15 +732,34 @@ Increment a counter to 1 million after ~10 seconds per task.
 
 .code final/finalpprof/main.go /START OMIT/,/END OMIT/
 
+: For comparison, we'll bring back the atomic counter incrementing loop test.
+: ---
+: We create a schedgroup, create 1 million tasks which will sleep for 10 seconds
+: each so we can gather measurements, and then wait for all of the tasks to
+: complete.
+
 * schedgroup goroutines: naive prototype
 
 .image naivecontext/goroutines.png 550 _
+
+: The naive prototype uses time.AfterFunc, which spins up a goroutine to wait
+: for the delay to elapse unless the timer is canceled. As a result, we end up
+: with roughly 1 million parked goroutines waiting for a select statement to
+: choose a case.
 
 * schedgroup goroutines: event-driven scheduler
 
 Massive reduction in number of goroutines: ~1,000,000 to 3 (one is pprof!)
 
 .image final/goroutines.png 450 _
+
+: Since the final package only spins up a goroutine when necessary, we see
+: a massive reduction in the number of running goroutines while waiting for the
+: tasks to fire: from 1 million down to 3, and one of those is the pprof call!
+: ---
+: Of course, this task will still eventually execute one million goroutines once
+: the delay for each task elapses, but it doesn't need to create them until exactly
+: the time that they are needed.
 
 * schedgroup heap in-use space: naive prototype
 
@@ -743,6 +770,17 @@ Massive reduction in number of goroutines: ~1,000,000 to 3 (one is pprof!)
     other:           33.00MB
 
 .image naivecontext/heapinuse.png 150 _
+
+: Next, we will examine the in-use heap space. For this, I've chosen a flame graph
+: because it provides a better view of the amount of memory a function call is
+: using, in relation to other functions.
+: ---
+: runtime.mstart is the top heap space consumer here. This function creates new
+: worker or machine threads, known as "Ms" in Go terminology. This means that the
+: runtime had to create a large number of threads up-front in order to schedule all
+: of the time.AfterFunc goroutines.
+: ---
+: The next consumer we see is space consumed by the state stored in time.AfterFunc.
 
 * schedgroup heap in-use space: event-driven scheduler
 
@@ -755,6 +793,15 @@ Roughly 6x reduction in in-use heap bytes: 219.74MB to 36.50MB
 
 .image final/heapinuse.png 180 _
 
+: The final package consumes much less memory while waiting for tasks to be scheduled
+: because it doesn't need to create any threads for the goroutines to run until
+: each task is ready to be scheduled. This results in roughly a 6x reduction in
+: the in-use heap bytes while awaiting task completion. Do note that this
+: number will inflate when the goroutines must actually be started, but not before.
+: ---
+: Group.Delay is the top memory consumer for this test, but it seems to consume
+: a few less megabytes of memory than the time.AfterFunc equivalent.
+
 * Summary
 
 What did we learn?
@@ -764,6 +811,17 @@ What did we learn?
 - Go runtime timers are very efficient, especially as of Go 1.14
 
 .link https://golang.org/doc/go1.14#runtime
+
+: In summary, there is a lot of value in creating a prototype, measuring its
+: performance, and using those measurements to make incremental improvements.
+: ---
+: I strive for correctness and simplicity in my work, and only work on optimizing
+: code once I can demonstrate that there is a strong need to do so.
+: ---
+: I was pleasantly surprised to see how well the Go runtime handles large numbers
+: of timers, especially as of the improvements in Go 1.14. Maybe it wasn't strictly
+: necessary to build out my own goroutine and timer management package, but I had
+: a ton of fun doing it, and learned a lot along the way!
 
 * More information
 
@@ -785,3 +843,11 @@ CoreRAD: an extensible and observable IPv6 NDP router advertisement daemon
 .link https://github.com/mdlayher/corerad
 
 .link https://mdlayher.com/blog/corerad-a-new-ipv6-router-advertisement-daemon/
+
+: If you're interested, you can check out the final package on GitHub at mdlayher/schedgroup.
+: ---
+: I'd like to again give special thanks to Egon Elbre for his help with two initial prototypes
+: that inspired me to build out this package. I could not have done it without his help!
+: ---
+: You can learn more about the Go timer improvements on issue 6239, and if you'd like to check
+: out CoreRAD, you can find the project on GitHub and an introduction on my blog.
