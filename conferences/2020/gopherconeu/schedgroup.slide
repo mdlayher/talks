@@ -167,9 +167,9 @@ Cons:
 : on the idea by limiting the number of goroutines and timers which will immediately
 : block on a task.
 : ---
-: When I started building schedgroup, Go 1.14 and its reworked runtime timers
-: were not released. My concerns about keeping an excessive number of timers
-: around are largely a non-issue with Go 1.14+.
+: It's worth noting that Go 1.14 was released with a significant rework to the runtime
+: timer code. I started building schedgroup during the 1.13 cycle, so perhaps some of
+: my concerns about timer efficiency are less of an issue with 1.14.
 
 * Efficiency vs. convenience
 
@@ -221,7 +221,7 @@ Tasks are created by Delay, and the caller can block until completion by calling
 : Delay schedules the execution of a function at or after the input delay. I mention
 : "at or after" specifically because the scheduling is best effort and may be
 : influenced by events such as goroutine scheduling or garbage collection.
-: In practice this hasn't been a problem for me.
+: In practice this hasn't been a problem for me or my applications.
 : ---
 : Wait blocks until all of the worker goroutines complete, allowing external
 : synchronization by the caller. 
@@ -280,7 +280,7 @@ Cons:
 : However, there are a couple of cons as well. Although it isn't much, the idle
 : worker goroutines do consume some system resources. Because of the fixed number
 : of workers, it's possible to block the caller when calling Delay if the internal
-: buffered channel is already full.
+: buffered channel is already full of tasks.
 : ---
 : This is an excellent start, but I decided to keep iterating to see what I could
 : come up with.
@@ -324,7 +324,7 @@ Let's implement `heap.Interface` for a slice of tasks.
 : a min-heap with Go's container/heap package.
 : ---
 : To make use of a heap, we have to create a type which implements sort.Interface
-: and methods to push items onto and pop them off the heap.
+: and a couple of extra methods to push items onto and pop them off the heap.
 
 * Implementing heap.Interface
 
@@ -358,7 +358,7 @@ A Group coordinates concurrent workers to expose a concise public API.
 
 .code timerpolling/schedgroup/group.go /START GROUP OMIT/,/END GROUP OMIT/
 
-: The Group type returns and must now manage an internal monitor goroutine, along
+: The Group type must now manage an internal monitor goroutine, along
 : with the necessary context to cancel that goroutine later on.
 
 * schedgroup: timer-polling using a monitor goroutine
@@ -402,7 +402,7 @@ The trigger method will see if any work is ready to be invoked as of time `now`.
 
 Wait blocks until work is done or the Group's context is canceled.
 
-: Finally, Wait also returns to determine if all of the outstanding tasks have
+: Finally, Wait allows the caller to determine if all of the outstanding tasks have
 : completed.
 : ---
 : The Context passed to New can short-circuit the Wait operation, but otherwise
@@ -447,7 +447,7 @@ Note the subtle red/pink banding in the PROCS section.
 
 Focusing on a 100ms slice shows the problem more clearly:
 
-- Polling the tasks heap every 1ms resulting in excessive CPU usage
+- Polling the tasks heap every 1ms results in excessive CPU usage
 - Ideally we want sustained CPU usage or no CPU usage; this is just inefficient!
 
 .image timerpolling/tracezoom.png 250 _
@@ -455,8 +455,8 @@ Focusing on a 100ms slice shows the problem more clearly:
 : By zooming in on a 100ms slice, we can see repeated, small periods of CPU
 : utilization as goroutines thrash between different OS threads running on my CPU.
 : ---
-: This is a direct effect of the timer-polling schedgroup prototype! Ideally we
-: want to see sustained CPU usage or no CPU usage at all.
+: This is a direct effect of the timer-polling schedgroup prototype! For optimal
+: efficiency and performance, we want to see sustained CPU usage or no CPU usage at all.
 
 * schedgroup: timer-polling using a monitor goroutine
 
@@ -545,7 +545,7 @@ Let's break down the Group architecture:
 
 A Group coordinates concurrent workers to expose a concise public API.
 
-: The Group type returns once again, but this time we have a couple of internal
+: The Group type is still our foundation, but this time we have a couple of internal
 : channels which are used for signaling between monitor and calling goroutines.
 : ---
 : addC sends a notification that a task was added to the heap, and lenC indicates
@@ -559,8 +559,8 @@ Delay and Schedule now signal that work has been added to the heap.
 
 .code final/schedgroup/group.go /START SCHEDULE OMIT/,/END SCHEDULE OMIT/
 
-: Delay and Schedule push a new task onto the heap and then notify monitor by
-: sending on addC. 
+: Delay and Schedule push a new task onto the heap and then notify the monitor
+: goroutine by sending on addC. 
 
 * schedgroup: event-driven scheduler with signaling channels
 
@@ -598,7 +598,7 @@ scheduled event is ready to fire.
 
 .code final/schedgroup/group.go /START MONITOR1 OMIT/,/END MONITOR1 OMIT/
 
-: monitor is necessarily more complex this time around. After checking for context
+: monitor is a bit more complex this time around. After checking for context
 : cancelation, it triggers any tasks that are ready as of the current time.
 : ---
 : trigger now returns the deadline of the next task. If there is a non-zero deadline,
@@ -656,7 +656,7 @@ Wait is used to block and wait for outstanding tasks in a Group.
 
 .code final/schedgroup/group.go /START WAIT1 OMIT/,/END WAIT1 OMIT/
 
-: Finally, we've reached Wait. It will block until all tasks in a Group have been
+: Finally, let's examine Wait. It will block until all tasks in a Group have been
 : run, or until the context passed to New is canceled.
 : ---
 : Both Wait and trigger depend on a mutex to inspect the tasks heap and determine
