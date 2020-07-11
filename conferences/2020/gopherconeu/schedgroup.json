@@ -1,5 +1,5 @@
 {
-    "VideoLink": "",
+    "VideoLink": "https://www.youtube.com/watch?v=fWTnROKW3bg",
     "Time": "2020-06-16T11:00:00Z",
     "Description": "Building and Go package which can schedule tasks to be performed at or after a specified time.",
     "Title": "schedgroup: a timer-based goroutine concurrency primitive",
