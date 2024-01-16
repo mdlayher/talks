@@ -20,7 +20,7 @@ import (
 const (
 	// talksPrefix is the base URL for the talks.godoc.org website with this
 	// repository's name prefixed.
-	talksPrefix = "https://talks.godoc.org/github.com/mdlayher/talks/"
+	talksPrefix = "https://go-talks.appspot.com/github.com/mdlayher/talks/"
 
 	// repoPrefix is the base URL for resources whose links are hosted in
 	// this repository.

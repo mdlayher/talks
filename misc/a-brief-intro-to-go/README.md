@@ -2,4 +2,4 @@
 
 
 
-- [slides](https://talks.godoc.org/github.com/mdlayher/talks/misc/a-brief-intro-to-go/a-brief-intro-to-go.slide)
+- [slides](https://go-talks.appspot.com/github.com/mdlayher/talks/misc/a-brief-intro-to-go/a-brief-intro-to-go.slide)
